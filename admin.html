@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Admin — ANAA ENTERPRISES</title>
-  <meta name="description" content="Admin panel for ANAA ENTERPRISES: manage products and orders."/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -12,438 +11,793 @@
       theme: {
         fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
         extend: {
-          colors: { brand: { 500:'#1897f2',600:'#0f78c6',700:'#0d63a5' } },
-          boxShadow: { soft:'0 10px 25px rgba(0,0,0,0.08)' }
+          colors: { brand: { 600:'#0f78c6', 700:'#0d63a5' } },
+          boxShadow: { soft:'0 20px 40px rgba(0,0,0,0.10)' }
         }
       }
     }
   </script>
-  <!-- If you've set up Firebase, include your firebase-config <script type="module"> BEFORE this file's bottom scripts on the page or inline on each page. -->
+  <style>
+  /* kill the broken Tailwind @apply and use plain CSS */
+  .no-scrollbar::-webkit-scrollbar{display:none}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:.35rem;
+    padding:.5rem .75rem; font-size:.875rem; line-height:1rem;
+    background:#fff; border:1px solid #e5e7eb; border-radius:0.75rem;
+    cursor:pointer; transition:background .15s ease, border-color .15s ease;
+  }
+  .btn:hover{ background:#f8fafc; border-color:#e2e8f0; }
+
+  .btnp{
+    display:inline-flex; align-items:center; gap:.35rem;
+    padding:.5rem .75rem; font-size:.875rem; line-height:1rem;
+    background:#0f78c6; color:#fff; border:1px solid transparent; border-radius:0.75rem;
+    font-weight:600; cursor:pointer; transition:background .15s ease;
+  }
+  .btnp:hover{ background:#0d63a5; }
+
+  .input{
+    width:100%; padding:.5rem .75rem; font-size:.875rem; line-height:1.25rem;
+    border:1px solid #e5e7eb; border-radius:0.75rem; background:#fff;
+  }
+  .input:focus{ outline:2px solid #0f78c6; outline-offset:0; }
+
+  .label{
+    display:block; font-size:.75rem; font-weight:600; color:#111827;
+  }
+
+  /* keep long grids/cards tidy on small screens */
+  #pGrid > div, #cList > div, #hList > div{
+    min-width:0;
+  }
+</style>
+
 </head>
 <body class="bg-gray-50 text-gray-900">
+
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-200">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2">
-        <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
-        <div class="leading-tight">
-          <div class="text-lg font-extrabold tracking-tight">ANAA ENTERPRISES</div>
-          <div class="text-xs text-gray-500">Admin Panel</div>
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b">
+    <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="btn">← Home</a>
+        <div class="flex items-center gap-2">
+          <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
+          <div class="leading-tight">
+            <div class="text-lg font-extrabold">ANAA ENTERPRISES</div>
+            <div class="text-xs text-gray-500">Admin Panel</div>
+          </div>
         </div>
-      </a>
-      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
-        <a href="products.html" class="hover:text-brand-700">View store</a>
-      </nav>
+      </div>
+      <div class="flex items-center gap-2 text-sm">
+        <span id="adminUser" class="text-gray-600"></span>
+        <button id="logoutBtn" class="btn">Sign out</button>
+      </div>
     </div>
   </header>
 
-  <!-- Main -->
-  <main class="py-10">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <!-- Admin gate -->
+  <div id="gate" class="mx-auto max-w-2xl p-6 mt-8 rounded-3xl border bg-white shadow-soft">
+    <h1 class="text-2xl font-extrabold">Admin Login</h1>
+    <p class="text-sm text-gray-600 mt-1">This is a simple local login for the panel. Replace with Firebase Auth later.</p>
+    <div class="mt-4 grid gap-3">
+      <div>
+        <label class="label">Admin email</label>
+        <input id="admEmail" class="input" placeholder="admin@anaa.local" value="admin@anaa.local">
+      </div>
+      <div>
+        <label class="label">Password</label>
+        <input id="admPass" class="input" type="password" placeholder="••••" value="anaa1234">
+      </div>
+      <div id="gateErr" class="text-sm text-red-600 hidden"></div>
+      <button id="gateBtn" class="btnp">Enter admin</button>
+      <p class="text-xs text-gray-500">Default: admin@anaa.local / anaa1234</p>
+    </div>
+  </div>
 
-      <!-- PRODUCTS -->
-      <h1 class="text-3xl font-extrabold">Manage Products</h1>
-      <p class="mt-1 text-sm text-gray-600">Add, edit, toggle active, or delete items. Saved to Firestore if configured; otherwise saved to this browser.</p>
+  <!-- Admin app -->
+  <main id="app" class="hidden mx-auto max-w-7xl px-4 py-6">
+    <!-- Tabs -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <button data-tab="products" class="btnp">Products</button>
+      <button data-tab="categories" class="btn">Categories</button>
+      <button data-tab="hero" class="btn">Hero Slides</button>
+      <button data-tab="orders" class="btn">Orders</button>
+      <button data-tab="settings" class="btn">Settings</button>
+      <span id="modeBadge" class="ml-auto text-xs px-2 py-1 rounded-full bg-gray-100"></span>
+    </div>
 
-      <div class="mt-4 flex flex-wrap gap-2">
-        <button class="rounded-xl border px-3 py-2 text-sm" onclick="Products.reload()">Refresh</button>
-        <button class="rounded-xl border px-3 py-2 text-sm" onclick="Products.bulkDeactivateZero()">Hide items with stock 0</button>
-        <button class="rounded-xl border px-3 py-2 text-sm" onclick="Products.bulkDeleteZero()">Delete items with stock 0</button>
-        <button class="rounded-xl border px-3 py-2 text-sm" onclick="Products.exportJSON()">Export JSON</button>
-        <label class="rounded-xl border px-3 py-2 text-sm cursor-pointer">
-          Import JSON<input id="prodImport" type="file" accept="application/json" class="hidden" onchange="Products.importJSON(event)">
+    <!-- PRODUCTS -->
+    <section id="tab-products" class="mt-6 rounded-3xl border bg-white p-4 shadow-soft">
+      <div class="flex flex-wrap items-center gap-2">
+        <form id="pSearch" class="flex items-center gap-2 flex-1 min-w-[220px]">
+          <input id="pQ" class="input" placeholder="Search products by title or SKU">
+          <button class="btn">Search</button>
+        </form>
+        <select id="pSort" class="input w-auto">
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+          <option value="pl">Price Low</option>
+          <option value="ph">Price High</option>
+          <option value="new">Newest</option>
+        </select>
+        <button id="newProduct" class="btnp">+ New Product</button>
+      </div>
+
+      <!-- Editor -->
+      <div id="pEditor" class="hidden mt-4 rounded-2xl border p-4 grid gap-3">
+        <div class="grid md:grid-cols-2 gap-3">
+          <div>
+            <label class="label">Title</label>
+            <input id="pe_title" class="input" required>
+          </div>
+          <div>
+            <label class="label">Category</label>
+            <select id="pe_category" class="input"></select>
+          </div>
+          <div>
+            <label class="label">Price (₹)</label>
+            <input id="pe_price" type="number" class="input" min="0" step="1">
+          </div>
+          <div>
+            <label class="label">Stock</label>
+            <input id="pe_stock" type="number" class="input" min="0" step="1">
+          </div>
+          <div>
+            <label class="label">SKU</label>
+            <input id="pe_sku" class="input">
+          </div>
+          <div class="flex items-center gap-2 mt-6">
+            <input id="pe_active" type="checkbox">
+            <label for="pe_active" class="text-sm">Active (visible on site)</label>
+          </div>
+        </div>
+        <div>
+          <label class="label">Image URL</label>
+          <input id="pe_image" class="input" placeholder="https://...">
+          <p class="text-xs text-gray-500 mt-1">Use a direct image URL for now. Upload feature can come later.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="pe_save" class="btnp">Save</button>
+          <button id="pe_cancel" class="btn">Cancel</button>
+          <button id="pe_delete" class="btn text-red-600 border-red-300">Delete</button>
+        </div>
+        <div id="pe_msg" class="text-sm text-green-700 hidden"></div>
+      </div>
+
+      <!-- Grid -->
+      <div id="pGrid" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section id="tab-categories" class="hidden mt-6 rounded-3xl border bg-white p-4 shadow-soft">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-extrabold">Categories</h2>
+        <button id="newCat" class="btnp">+ New Category</button>
+      </div>
+      <div id="cEditor" class="hidden mt-4 rounded-2xl border p-4 grid md:grid-cols-2 gap-3">
+        <div>
+          <label class="label">Label</label>
+          <input id="ce_label" class="input">
+        </div>
+        <div>
+          <label class="label">Slug</label>
+          <input id="ce_slug" class="input" placeholder="e.g., home-appliances">
+        </div>
+        <div>
+          <label class="label">Icon (emoji)</label>
+          <input id="ce_icon" class="input" placeholder="🪑">
+        </div>
+        <div>
+          <label class="label">Sort Order</label>
+          <input id="ce_sort" type="number" class="input" value="1">
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+          <input id="ce_active" type="checkbox" checked>
+          <label for="ce_active" class="text-sm">Active</label>
+        </div>
+        <div class="col-span-full flex items-center gap-2">
+          <button id="ce_save" class="btnp">Save</button>
+          <button id="ce_cancel" class="btn">Cancel</button>
+          <button id="ce_delete" class="btn text-red-600 border-red-300">Delete</button>
+        </div>
+      </div>
+      <div id="cList" class="mt-4 grid md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+    </section>
+
+    <!-- HERO SLIDES -->
+    <section id="tab-hero" class="hidden mt-6 rounded-3xl border bg-white p-4 shadow-soft">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-extrabold">Hero Slides</h2>
+        <button id="newSlide" class="btnp">+ New Slide</button>
+      </div>
+
+      <div id="hEditor" class="hidden mt-4 rounded-2xl border p-4 grid md:grid-cols-2 gap-3">
+        <div>
+          <label class="label">Title</label>
+          <input id="he_title" class="input">
+        </div>
+        <div>
+          <label class="label">Link</label>
+          <input id="he_link" class="input" placeholder="products.html?cat=...">
+        </div>
+        <div class="md:col-span-2">
+          <label class="label">Image URL</label>
+          <input id="he_image" class="input" placeholder="https://...">
+        </div>
+        <div>
+          <label class="label">Sort</label>
+          <input id="he_sort" type="number" class="input" value="1">
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+          <input id="he_active" type="checkbox" checked>
+          <label for="he_active" class="text-sm">Active</label>
+        </div>
+        <div class="md:col-span-2 flex items-center gap-2">
+          <button id="he_save" class="btnp">Save</button>
+          <button id="he_cancel" class="btn">Cancel</button>
+          <button id="he_delete" class="btn text-red-600 border-red-300">Delete</button>
+        </div>
+      </div>
+
+      <div id="hList" class="mt-4 grid md:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+    </section>
+
+    <!-- ORDERS -->
+    <section id="tab-orders" class="hidden mt-6 rounded-3xl border bg-white p-4 shadow-soft">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-extrabold">Orders</h2>
+        <button id="refreshOrders" class="btn">Refresh</button>
+      </div>
+      <div id="oList" class="mt-4 grid gap-3"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="tab-settings" class="hidden mt-6 rounded-3xl border bg-white p-4 shadow-soft">
+      <h2 class="text-lg font-extrabold">Backups</h2>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <button id="exportBtn" class="btn">Export JSON</button>
+        <label class="btn cursor-pointer">
+          Import JSON
+          <input id="importFile" type="file" accept="application/json" class="hidden">
         </label>
       </div>
-
-      <div id="prodList" class="mt-4 grid gap-3"></div>
-
-      <div class="mt-8 rounded-2xl border bg-white p-6">
-        <div class="text-lg font-extrabold">Add new product</div>
-        <form id="addForm" class="mt-4 grid sm:grid-cols-2 md:grid-cols-3 gap-3" onsubmit="Products.add(event)">
-          <input id="title" class="border rounded-lg px-3 py-2 text-sm" placeholder="Title" required>
-          <input id="price" type="number" class="border rounded-lg px-3 py-2 text-sm" placeholder="Price" required>
-          <input id="category" class="border rounded-lg px-3 py-2 text-sm" placeholder="Category" required>
-          <input id="sku" class="border rounded-lg px-3 py-2 text-sm" placeholder="SKU">
-          <input id="image" class="border rounded-lg px-3 py-2 text-sm" placeholder="Image URL">
-          <input id="stock" type="number" class="border rounded-lg px-3 py-2 text-sm" placeholder="Stock" value="10">
-          <button class="sm:col-span-2 md:col-span-3 rounded-xl bg-brand-600 text-white font-semibold px-4 py-2 hover:bg-brand-700">Add product</button>
-        </form>
-      </div>
-
-      <!-- ORDERS -->
-      <hr class="my-10">
-      <h2 class="text-2xl font-extrabold">Orders</h2>
-      <p class="mt-1 text-sm text-gray-600">Review orders from checkout. Mark Paid/Delivered/Cancelled, delete, or export CSV.</p>
-
-      <div class="mt-4 flex flex-wrap gap-2 items-center">
-        <select id="ordStatus" class="rounded-xl border px-3 py-2 text-sm">
-          <option value="all">All</option>
-          <option value="pending" selected>Pending</option>
-          <option value="paid">Paid</option>
-          <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-        <input id="ordSearch" class="rounded-xl border px-3 py-2 text-sm" placeholder="Search by Order ID / phone / name">
-        <button class="rounded-xl border px-3 py-2 text-sm" onclick="Orders.reload()">Refresh</button>
-        <button class="rounded-xl border px-3 py-2 text-sm" onclick="Orders.exportCSV()">Export CSV</button>
-      </div>
-
-      <div id="ordersList" class="mt-4 grid gap-3"></div>
-
-    </div>
+      <p class="text-xs text-gray-600 mt-2">Exports/Imports products, categories, and hero slides from localStorage. Firestore users should manage backups there.</p>
+    </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t bg-white mt-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-600 flex justify-between">
-      <div>© <span id="year"></span> ANAA ENTERPRISES</div>
-      <div class="flex gap-4"><a href="#">Return policy</a><a href="#">Shipping</a><a href="#">Privacy</a></div>
-    </div>
-  </footer>
+  <script type="module">
+    // Optional Firebase: expose window.db if configured
+    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    // import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    // const app = initializeApp({ /* your config */ });
+    // window.db = getFirestore(app);
+  </script>
 
-  <!-- ADMIN SCRIPT -->
   <script>
-    // ---------- helpers ----------
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // ------------- ADMIN GATE -------------
+    const ADMIN_KEY='anaa_admin';
+    function getAdmin(){ try { return JSON.parse(localStorage.getItem(ADMIN_KEY)||'null'); } catch { return null; } }
+    function setAdmin(obj){ localStorage.setItem(ADMIN_KEY, JSON.stringify(obj)); }
+    function signOutAdmin(){ localStorage.removeItem(ADMIN_KEY); location.reload(); }
+
+    const gateEl = document.getElementById('gate');
+    const appEl  = document.getElementById('app');
+    const adminUserEl = document.getElementById('adminUser');
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', signOutAdmin);
+
+    function enterIfAuthed(){
+      const a = getAdmin();
+      if(a){
+        gateEl.classList.add('hidden');
+        appEl.classList.remove('hidden');
+        adminUserEl.textContent = a.email;
+      }
+    }
+    document.getElementById('gateBtn').addEventListener('click', ()=>{
+      const email = document.getElementById('admEmail').value.trim().toLowerCase();
+      const pass  = document.getElementById('admPass').value;
+      const err   = document.getElementById('gateErr');
+      err.classList.add('hidden');
+      if(email==='admin@anaa.local' && pass==='anaa1234'){
+        setAdmin({ email });
+        enterIfAuthed();
+      } else {
+        err.textContent = 'Wrong email or password.'; err.classList.remove('hidden');
+      }
+    });
+    enterIfAuthed();
+
+    // ------------- DATA LAYERS -------------
+    const MODE_BADGE = document.getElementById('modeBadge');
+
+    // Local keys
+    const K = {
+      products: 'anaa_products',
+      categories: 'anaa_categories',
+      hero: 'anaa_hero',
+      orders: 'anaa_orders'
+    };
+
+    // Helpers
+    const esc = s => String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
     const fmt = n => '₹' + Number(n||0).toLocaleString('en-IN');
-    function card(t){ return `<div class="rounded-2xl border bg-white p-6 text-gray-700 text-sm">${t}</div>`; }
-    function escHTML(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); }
-    function fmtDate(ts, raw=false){
+
+    // Local persistence
+    function readLocal(key, fallback=[]){ try{ return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback)); } catch { return fallback; } }
+    function writeLocal(key, arr){ localStorage.setItem(key, JSON.stringify(arr)); }
+
+    // Firestore wrappers (no-crash if not present)
+    async function fsAvailable(){ return Boolean(window.db); }
+
+    async function fsList(colName, order='title'){
+      if(!(await fsAvailable())) return null;
       try{
-        const d = ts?.toDate ? ts.toDate() : (typeof ts?.seconds==='number' ? new Date(ts.seconds*1000) : new Date());
-        return raw ? d.toISOString() : d.toLocaleString('en-IN');
-      } catch { return ''; }
+        const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+        const snap = await getDocs(query(collection(window.db,colName), orderBy(order)));
+        return snap.docs.map(d=>({ id:d.id, ...d.data() }));
+      }catch(e){ console.warn('fsList', colName, e); return null; }
+    }
+    async function fsAdd(colName, data){
+      if(!(await fsAvailable())) return null;
+      try{
+        const { addDoc, collection, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+        const payload = { ...data };
+        if(!('createdAt' in payload)) payload.createdAt = serverTimestamp();
+        const ref = await addDoc(collection(window.db,colName), payload);
+        return { id: ref.id, ...data };
+      }catch(e){ console.warn('fsAdd', colName, e); return null; }
+    }
+    async function fsUpdate(colName, id, data){
+      if(!(await fsAvailable())) return false;
+      try{
+        const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+        await updateDoc(doc(window.db,colName,id), data);
+        return true;
+      }catch(e){ console.warn('fsUpdate', colName, e); return false; }
+    }
+    async function fsDelete(colName, id){
+      if(!(await fsAvailable())) return false;
+      try{
+        const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+        await deleteDoc(doc(window.db,colName,id));
+        return true;
+      }catch(e){ console.warn('fsDelete', colName, e); return false; }
     }
 
-    // Detect Firebase
-    const hasFB = !!window.db;
+    // Mode badge
+    (async ()=>{ MODE_BADGE.textContent = (await fsAvailable()) ? 'Mode: Firestore' : 'Mode: LocalStorage'; })();
 
-    // ---------- PRODUCTS ----------
-    const prodList = document.getElementById('prodList');
-
-    const Products = {
-      LS_KEY: 'anaa_products',
-
-      async load(){
-        if (hasFB) {
-          try {
-            const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            const snap = await getDocs(query(collection(window.db,'products'), orderBy('createdAt','desc')));
-            return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          } catch(e){ console.warn('Firestore load failed, falling back to local', e); }
-        }
-        // local fallback
-        try { return JSON.parse(localStorage.getItem(this.LS_KEY) || '[]'); } catch { return []; }
-      },
-
-      async saveAll(list){
-        if (hasFB) {
-          // For Firestore we write per-field in edit functions; bulk save not used.
-          return;
-        }
-        localStorage.setItem(this.LS_KEY, JSON.stringify(list));
-      },
-
-      async reload(){ prodList.innerHTML = card('Loading products…'); const items = await this.load(); this.render(items); },
-
-      render(items){
-        if (!items.length){ prodList.innerHTML = card('No products yet. Add one below.'); return; }
-        prodList.innerHTML = items.map(p => `
-          <div class="rounded-2xl border bg-white p-4 grid md:grid-cols-7 gap-3 items-start">
-            <img src="${p.image||'https://via.placeholder.com/160x120'}" class="h-20 w-24 object-cover rounded-xl md:col-span-1">
-            <input value="${escHTML(p.title||'')}" class="border rounded-lg px-2 py-1 text-sm md:col-span-2" onchange="Products.edit('${p.id||p._id||''}','title',this.value)">
-            <input value="${escHTML(p.category||'')}" class="border rounded-lg px-2 py-1 text-sm" onchange="Products.edit('${p.id||p._id||''}','category',this.value)">
-            <input value="${p.price||0}" type="number" class="border rounded-lg px-2 py-1 text-sm" onchange="Products.edit('${p.id||p._id||''}','price',Number(this.value))">
-            <div class="flex items-center gap-2">
-              <input value="${p.stock||0}" type="number" class="border rounded-lg px-2 py-1 text-sm w-24" onchange="Products.edit('${p.id||p._id||''}','stock',Number(this.value))">
-              <button class="text-xs rounded border px-2 py-1" onclick="Products.edit('${p.id||p._id||''}','stock',0)">Set 0</button>
-              <button class="text-xs rounded border px-2 py-1" onclick="Products.edit('${p.id||p._id||''}','stock',(Number('${p.stock||0}')+10))">+10</button>
-            </div>
-            <label class="flex items-center gap-2 text-sm">
-              <input type="checkbox" ${p.active===false?'':'checked'} onchange="Products.edit('${p.id||p._id||''}','active',this.checked)"> Active
-            </label>
-            <div class="flex items-center gap-2 md:col-span-7">
-              <input value="${escHTML(p.image||'')}" class="border rounded-lg px-2 py-1 text-sm flex-1" onchange="Products.edit('${p.id||p._id||''}','image',this.value)">
-              <input value="${escHTML(p.sku||'')}" class="border rounded-lg px-2 py-1 text-sm w-40" onchange="Products.edit('${p.id||p._id||''}','sku',this.value)">
-              <button class="text-xs text-red-600" onclick="Products.remove('${p.id||p._id||''}')">Delete</button>
-            </div>
-          </div>
-        `).join('');
-        this._cache = items;
-      },
-
-      async edit(id, field, val){
-        if (hasFB && id) {
-          try {
-            const { updateDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            await updateDoc(doc(window.db,'products', id), { [field]: val });
-          } catch(e){ console.warn('Firestore update failed', e); }
-        } else {
-          const items = this._cache || await this.load();
-          const i = items.findIndex(x => String(x.id||x._id) === String(id));
-          if (i >= 0) { items[i][field] = val; await this.saveAll(items); }
-        }
-      },
-
-      async remove(id){
-        if(!confirm('Delete this product?')) return;
-        if (hasFB && id) {
-          try {
-            const { deleteDoc, doc } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            await deleteDoc(doc(window.db,'products', id));
-          } catch(e){ console.warn('Firestore delete failed', e); }
-        } else {
-          const items = this._cache || await this.load();
-          const out = items.filter(x => String(x.id||x._id) !== String(id));
-          await this.saveAll(out);
-        }
-        this.reload();
-      },
-
-      async add(e){
-        e.preventDefault();
-        const p = {
-          title: document.getElementById('title').value.trim(),
-          price: Number(document.getElementById('price').value||0),
-          category: document.getElementById('category').value.trim(),
-          sku: document.getElementById('sku').value.trim(),
-          image: document.getElementById('image').value.trim(),
-          stock: Number(document.getElementById('stock').value||0),
-          active: true
-        };
-        if (hasFB) {
-          try {
-            const { addDoc, collection, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            await addDoc(collection(window.db,'products'), { ...p, createdAt: serverTimestamp() });
-          } catch(e){ console.warn('Firestore add failed', e); }
-        } else {
-          const items = await this.load();
-          p._id = Date.now(); // local id
-          items.unshift(p);
-          await this.saveAll(items);
-        }
-        e.target.reset();
-        this.reload();
-      },
-
-      async bulkDeactivateZero(){
-        if(!confirm('Set active=false for all items with stock 0?')) return;
-        const items = await this.load();
-        const changed = items.filter(x => Number(x.stock||0) === 0).map(x => ({...x, active:false}));
-        if (hasFB) {
-          try {
-            const { collection, query, where, getDocs, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            const qz = query(collection(window.db,'products'), where('stock','==',0));
-            const snap = await getDocs(qz);
-            const batch = writeBatch(window.db);
-            snap.forEach(docSnap => batch.update(docSnap.ref, { active:false }));
-            await batch.commit();
-          } catch(e){ console.warn('Batch hide failed', e); }
-        } else {
-          const map = new Map(items.map(i=>[String(i.id||i._id), i]));
-          changed.forEach(c => map.set(String(c.id||c._id), c));
-          await this.saveAll(Array.from(map.values()));
-        }
-        this.reload();
-      },
-
-      async bulkDeleteZero(){
-        if(!confirm('Delete ALL products with stock 0? This cannot be undone.')) return;
-        const items = await this.load();
-        if (hasFB) {
-          try {
-            const { collection, query, where, getDocs, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            const qz = query(collection(window.db,'products'), where('stock','==',0));
-            const snap = await getDocs(qz);
-            const batch = writeBatch(window.db);
-            snap.forEach(docSnap => batch.delete(docSnap.ref));
-            await batch.commit();
-          } catch(e){ console.warn('Batch delete failed', e); }
-        } else {
-          const out = items.filter(x => Number(x.stock||0) !== 0);
-          await this.saveAll(out);
-        }
-        this.reload();
-      },
-
-      exportJSON(){
-        this.load().then(items=>{
-          const blob = new Blob([JSON.stringify(items,null,2)], {type:'application/json'});
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(blob); a.download = 'products.json'; a.click(); URL.revokeObjectURL(a.href);
+    // ------------- TABS -------------
+    const tabs = ['products','categories','hero','orders','settings'];
+    document.querySelectorAll('[data-tab]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        tabs.forEach(t=>{
+          document.getElementById('tab-'+t).classList.toggle('hidden', t !== btn.dataset.tab);
         });
-      },
+        document.querySelectorAll('[data-tab]').forEach(b=> b.className = 'btn');
+        btn.className = 'btnp';
+      });
+    });
 
-      importJSON(ev){
-        const f = ev.target.files[0]; if(!f) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-          try {
-            const arr = JSON.parse(reader.result || '[]');
-            if (!Array.isArray(arr)) throw new Error('Invalid JSON');
-            if (hasFB) {
-              const { addDoc, collection, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-              for(const p of arr){
-                const clean = { title:p.title||'', price:Number(p.price||0), category:p.category||'', sku:p.sku||'', image:p.image||'', stock:Number(p.stock||0), active:p.active!==false, createdAt: serverTimestamp() };
-                await addDoc(collection(window.db,'products'), clean);
-              }
-            } else {
-              await localStorage.setItem(Products.LS_KEY, JSON.stringify(arr));
-            }
-            Products.reload();
-          } catch(e){ alert('Import failed: ' + e.message); }
-        };
-        reader.readAsText(f);
+    // default tab
+    document.querySelector('[data-tab="products"]').click();
+
+    // ------------- CATEGORIES -------------
+    let CATS = [];
+
+    async function loadCategories(){
+      const fs = await fsList('categories','sort');
+      if(fs && fs.length){ CATS = fs; renderCatList(); fillCatSelect(); return; }
+      // fallback
+      CATS = readLocal(K.categories, [
+        { id:'c1', label:'Furniture', slug:'furniture', icon:'🪑', active:true, sort:1 },
+        { id:'c2', label:'Electronics', slug:'electronics', icon:'🔌', active:true, sort:2 },
+        { id:'c3', label:'Home Appliances', slug:'home-appliances', icon:'🧯', active:true, sort:3 },
+        { id:'c4', label:'Household Products', slug:'household', icon:'🧽', active:true, sort:4 },
+        { id:'c5', label:'Plastic Products', slug:'plastic', icon:'🧺', active:true, sort:5 },
+        { id:'c6', label:'Blankets & Mattress', slug:'blankets', icon:'🛏️', active:true, sort:6 },
+      ]);
+      writeLocal(K.categories, CATS);
+      renderCatList(); fillCatSelect();
+    }
+
+    const cList = document.getElementById('cList');
+    const cEditor = document.getElementById('cEditor');
+    const ce_label = document.getElementById('ce_label');
+    const ce_slug  = document.getElementById('ce_slug');
+    const ce_icon  = document.getElementById('ce_icon');
+    const ce_sort  = document.getElementById('ce_sort');
+    const ce_active= document.getElementById('ce_active');
+    let editingCatId = null;
+
+    function renderCatList(){
+      const sorted = [...CATS].sort((a,b)=>Number(a.sort||0)-Number(b.sort||0));
+      cList.innerHTML = sorted.map(c=>`
+        <div class="rounded-2xl border p-3 flex items-center justify-between">
+          <div>
+            <div class="font-semibold">${esc(c.icon||'')} ${esc(c.label)}</div>
+            <div class="text-xs text-gray-600">${esc(c.slug)} • Sort ${Number(c.sort||0)} • ${c.active?'Active':'Hidden'}</div>
+          </div>
+          <button class="btn" onclick="editCat('${c.id}')">Edit</button>
+        </div>
+      `).join('');
+    }
+    function fillCatSelect(){
+      // for product editor dropdown
+      const sel = document.getElementById('pe_category');
+      sel.innerHTML = CATS.filter(c=>c.active!==false).map(c=>`<option value="${esc(c.label)}">${esc(c.label)}</option>`).join('');
+    }
+    window.editCat = function(id){
+      const c = CATS.find(x=>x.id===id);
+      if(!c) return;
+      editingCatId = id;
+      ce_label.value = c.label||'';
+      ce_slug.value  = c.slug||'';
+      ce_icon.value  = c.icon||'';
+      ce_sort.value  = Number(c.sort||1);
+      ce_active.checked = c.active!==false;
+      cEditor.classList.remove('hidden');
+    }
+
+    document.getElementById('newCat').addEventListener('click', ()=>{
+      editingCatId = null;
+      ce_label.value = ''; ce_slug.value=''; ce_icon.value=''; ce_sort.value=1; ce_active.checked=true;
+      cEditor.classList.remove('hidden');
+    });
+    document.getElementById('ce_cancel').addEventListener('click', ()=> cEditor.classList.add('hidden'));
+    document.getElementById('ce_save').addEventListener('click', async ()=>{
+      const obj = {
+        label: ce_label.value.trim(),
+        slug:  ce_slug.value.trim() || ce_label.value.trim().toLowerCase().replace(/\s+/g,'-'),
+        icon:  ce_icon.value.trim(),
+        sort:  Number(ce_sort.value||1),
+        active: ce_active.checked
+      };
+      if(!obj.label){ alert('Label required'); return; }
+      if(await fsAvailable()){
+        if(editingCatId) await fsUpdate('categories', editingCatId, obj);
+        else { const add = await fsAdd('categories', obj); obj.id = add?.id || ('lc'+Date.now()); }
+        const fs = await fsList('categories','sort'); if(fs) CATS = fs;
+      } else {
+        if(editingCatId){ const i=CATS.findIndex(x=>x.id===editingCatId); if(i>=0) CATS[i]={...CATS[i], ...obj}; }
+        else { obj.id='lc'+Date.now(); CATS.push(obj); }
+        writeLocal(K.categories, CATS);
       }
-    };
+      cEditor.classList.add('hidden'); renderCatList(); fillCatSelect();
+    });
+    document.getElementById('ce_delete').addEventListener('click', async ()=>{
+      if(!editingCatId) return;
+      if(!confirm('Delete this category?')) return;
+      if(await fsAvailable()){
+        await fsDelete('categories', editingCatId);
+        const fs = await fsList('categories','sort'); if(fs) CATS = fs;
+      } else {
+        CATS = CATS.filter(x=>x.id!==editingCatId);
+        writeLocal(K.categories, CATS);
+      }
+      cEditor.classList.add('hidden'); renderCatList(); fillCatSelect();
+    });
 
-    // ---------- ORDERS ----------
-    const ordersBox = document.getElementById('ordersList');
-    const ordStatus = document.getElementById('ordStatus');
-    const ordSearch = document.getElementById('ordSearch');
+    // ------------- PRODUCTS -------------
+    let PRODUCTS = [];
+    async function loadProducts(){
+      const fs = await fsList('products','title');
+      if(fs){ PRODUCTS = fs; renderPGrid(); return; }
+      PRODUCTS = readLocal(K.products, []);
+      renderPGrid();
+    }
 
-    const Orders = {
-      LS_KEY: 'anaa_orders',
-      all: [],
+    const pGrid = document.getElementById('pGrid');
+    const pQ = document.getElementById('pQ');
+    const pSort = document.getElementById('pSort');
+    const pEditor = document.getElementById('pEditor');
+    const pe_title = document.getElementById('pe_title');
+    const pe_category = document.getElementById('pe_category');
+    const pe_price = document.getElementById('pe_price');
+    const pe_stock = document.getElementById('pe_stock');
+    const pe_sku = document.getElementById('pe_sku');
+    const pe_active = document.getElementById('pe_active');
+    const pe_image = document.getElementById('pe_image');
+    const pe_msg = document.getElementById('pe_msg');
+    let editingProdId = null;
 
-      async reload(){
-        ordersBox.innerHTML = card('Loading orders…');
-        let list = [];
-        if (hasFB) {
-          try {
-            const { collection, getDocs, query, orderBy } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            const snap = await getDocs(query(collection(window.db,'orders'), orderBy('createdAt','desc')));
-            list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          } catch(e){ console.warn('Firestore orders failed, falling back to local', e); }
-        }
-        if (!list.length) {
-          try { list = JSON.parse(localStorage.getItem(this.LS_KEY) || '[]'); } catch { list = []; }
-        }
-        this.all = list;
-        this.render();
-      },
+    function productFilterSort(){
+      const q = (pQ.value||'').toLowerCase();
+      let list = PRODUCTS.filter(p=>{
+        const t=(p.title||'').toLowerCase();
+        const s=(p.sku||'').toLowerCase();
+        return !q || t.includes(q) || s.includes(q);
+      });
+      const s = pSort.value;
+      if(s==='az') list.sort((a,b)=> String(a.title).localeCompare(String(b.title)));
+      if(s==='za') list.sort((a,b)=> String(b.title).localeCompare(String(a.title)));
+      if(s==='pl') list.sort((a,b)=> Number(a.price||0)-Number(b.price||0));
+      if(s==='ph') list.sort((a,b)=> Number(b.price||0)-Number(a.price||0));
+      if(s==='new') list.sort((a,b)=> (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+      return list;
+    }
 
-      render(){
-        const st = ordStatus.value;
-        const q = (ordSearch.value || '').trim().toLowerCase();
-        let list = this.all;
-        if (st !== 'all') list = list.filter(o => (o.paymentStatus||'pending') === st || (o.status||'') === st);
-        if (q) list = list.filter(o => [o.orderId, o?.customer?.phone, o?.customer?.name].join(' ').toLowerCase().includes(q));
-
-        if (!list.length){ ordersBox.innerHTML = card('No orders match your filters.'); return; }
-
-        ordersBox.innerHTML = list.map(o => `
-          <div class="rounded-2xl border bg-white p-4">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="font-semibold">#${escHTML(o.orderId || o.id || '-')}</div>
-              <div class="text-xs text-gray-500">${fmtDate(o.createdAt)}</div>
-            </div>
-            <div class="mt-2 grid md:grid-cols-5 gap-2 text-sm">
-              <div><span class="text-gray-500">Customer:</span> ${escHTML(o?.customer?.name||'')}<br><span class="text-gray-500">Phone:</span> ${escHTML(o?.customer?.phone||'')}</div>
-              <div class="md:col-span-2"><span class="text-gray-500">Address:</span> ${escHTML((o?.customer?.address||'')+', '+(o?.customer?.city||'')+' '+(o?.customer?.pincode||''))}</div>
-              <div><span class="text-gray-500">Mode:</span> ${escHTML(o.paymentMode||'-')}<br><span class="text-gray-500">Amount:</span> ${fmt(o.amount||0)}</div>
-              <div><span class="text-gray-500">Status:</span> ${this.badge(o)}</div>
-            </div>
-            <details class="mt-2">
-              <summary class="cursor-pointer text-sm">Items</summary>
-              <div class="mt-2 text-sm">
-                ${(o.items||[]).map(i=>`${escHTML(i.title||'item')} × ${i.qty} — ${fmt((i.price||0)*(i.qty||0))}`).join('<br>') || '—'}
-              </div>
-              ${o.utr ? `<div class="mt-2 text-xs text-gray-600">UTR: ${escHTML(o.utr)}</div>` : ''}
-              ${o.upiId ? `<div class="text-xs text-gray-600">UPI: ${escHTML(o.upiId)}</div>` : ''}
-              ${o.customer?.notes ? `<div class="text-xs text-gray-600">Notes: ${escHTML(o.customer.notes)}</div>` : ''}
-            </details>
-            <div class="mt-3 flex flex-wrap gap-2">
-              <button class="rounded-xl border px-3 py-1.5 text-sm" onclick="Orders.setStatus('${o.id||o.orderId}','paid')">Mark Paid</button>
-              <button class="rounded-xl border px-3 py-1.5 text-sm" onclick="Orders.setStatus('${o.id||o.orderId}','delivered')">Mark Delivered</button>
-              <button class="rounded-xl border px-3 py-1.5 text-sm" onclick="Orders.setStatus('${o.id||o.orderId}','cancelled')">Cancel</button>
-              <button class="rounded-xl border px-3 py-1.5 text-sm text-red-600" onclick="Orders.remove('${o.id||o.orderId}')">Delete</button>
+    function renderPGrid(){
+      const list = productFilterSort();
+      pGrid.innerHTML = list.map(p=>`
+        <div class="rounded-2xl border bg-white overflow-hidden">
+          <img src="${esc(p.image||'')}" class="w-full aspect-[4/3] object-cover">
+          <div class="p-3">
+            <div class="text-xs text-gray-500">${esc(p.category||'')}</div>
+            <div class="font-semibold truncate" title="${esc(p.title)}">${esc(p.title)}</div>
+            <div class="mt-1 font-extrabold text-brand-700">${fmt(p.price||0)}</div>
+            <div class="mt-2 flex items-center justify-between">
+              <label class="text-xs flex items-center gap-2">
+                <input type="checkbox" ${p.active!==false?'checked':''} onchange="toggleActive('${p.id}', this.checked)">
+                Active
+              </label>
+              <button class="btn" onclick="editProduct('${p.id}')">Edit</button>
             </div>
           </div>
-        `).join('');
-      },
+        </div>
+      `).join('');
+    }
 
-      badge(o){
-        const st = o.paymentStatus || o.status || 'pending';
-        const cls = st==='paid' ? 'bg-green-100 text-green-700' :
-                    st==='delivered' ? 'bg-blue-100 text-blue-700' :
-                    st==='cancelled' ? 'bg-red-100 text-red-700' :
-                    'bg-amber-100 text-amber-700';
-        return `<span class="px-2 py-1 rounded ${cls}">${escHTML(st)}</span>`;
-      },
+    window.toggleActive = async function(id, active){
+      if(await fsAvailable()){ await fsUpdate('products', id, { active }); }
+      else { const i=PRODUCTS.findIndex(x=>x.id===id); if(i>=0){ PRODUCTS[i].active = active; writeLocal(K.products, PRODUCTS); } }
+    }
 
-      async setStatus(id, status){
-        let ok = false;
-        if (hasFB && id) {
-          try {
-            const { updateDoc, doc, getDocs, query, collection, where } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            // If we only have orderId (string), look it up
-            let ref = null;
-            try { ref = doc(window.db,'orders', id); await updateDoc(ref, { paymentStatus: status, status }); ok = true; }
-            catch {
-              const snap = await getDocs(query(collection(window.db,'orders'), where('orderId','==', id)));
-              for (const d of snap.docs){ await updateDoc(d.ref, { paymentStatus: status, status }); ok = true; }
-            }
-          } catch(e){ console.warn('Firestore status update failed', e); }
-        }
-        if (!ok) {
-          // local fallback
-          const arr = JSON.parse(localStorage.getItem(this.LS_KEY) || '[]');
-          const i = arr.findIndex(o => String(o.id||o.orderId) === String(id));
-          if (i >= 0) { arr[i].paymentStatus = status; arr[i].status = status; }
-          localStorage.setItem(this.LS_KEY, JSON.stringify(arr));
-        }
-        this.reload();
-      },
+    window.editProduct = function(id){
+      const p = PRODUCTS.find(x=>x.id===id);
+      if(!p) return;
+      editingProdId = id;
+      pe_title.value = p.title||'';
+      pe_category.value = CATS.find(c=>c.label===p.category)?.label || (CATS[0]?.label || '');
+      pe_price.value = Number(p.price||0);
+      pe_stock.value = Number(p.stock||0);
+      pe_sku.value = p.sku||'';
+      pe_active.checked = p.active!==false;
+      pe_image.value = p.image||'';
+      pe_msg.classList.add('hidden'); pe_msg.textContent='';
+      pEditor.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-      async remove(id){
-        let ok = false;
-        if (hasFB && id) {
-          try {
-            const { deleteDoc, doc, getDocs, query, collection, where } = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
-            try { await deleteDoc(doc(window.db,'orders', id)); ok = true; }
-            catch {
-              const snap = await getDocs(query(collection(window.db,'orders'), where('orderId','==', id)));
-              for (const d of snap.docs){ await deleteDoc(d.ref); ok = true; }
-            }
-          } catch(e){ console.warn('Firestore delete failed', e); }
-        }
-        if (!ok) {
-          const arr = JSON.parse(localStorage.getItem(this.LS_KEY) || '[]').filter(o => String(o.id||o.orderId) !== String(id));
-          localStorage.setItem(this.LS_KEY, JSON.stringify(arr));
-        }
-        this.reload();
-      },
+    document.getElementById('newProduct').addEventListener('click', ()=>{
+      editingProdId = null;
+      pe_title.value=''; pe_price.value=''; pe_stock.value=''; pe_sku.value=''; pe_image.value='';
+      pe_active.checked = true;
+      pe_category.value = CATS[0]?.label || '';
+      pe_msg.classList.add('hidden'); pe_msg.textContent='';
+      pEditor.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.getElementById('pe_cancel').addEventListener('click', ()=> pEditor.classList.add('hidden'));
 
-      exportCSV(){
-        const rows = [['OrderID','Amount','Mode','Status','Name','Phone','City','Pincode','CreatedAt']];
-        const st = ordStatus.value;
-        const q = (ordSearch.value || '').trim().toLowerCase();
-        let list = this.all;
-        if (st !== 'all') list = list.filter(o => (o.paymentStatus||'pending') === st || (o.status||'') === st);
-        if (q) list = list.filter(o => [o.orderId, o?.customer?.phone, o?.customer?.name].join(' ').toLowerCase().includes(q));
-        for(const o of list){
-          rows.push([
-            o.orderId || o.id || '',
-            Number(o.amount||0),
-            o.paymentMode || '',
-            o.paymentStatus || o.status || '',
-            o.customer?.name || '',
-            o.customer?.phone || '',
-            o.customer?.city || '',
-            o.customer?.pincode || '',
-            fmtDate(o.createdAt, true)
-          ]);
+    document.getElementById('pe_save').addEventListener('click', async ()=>{
+      const obj = {
+        title: pe_title.value.trim(),
+        category: pe_category.value.trim(),
+        price: Number(pe_price.value||0),
+        stock: Number(pe_stock.value||0),
+        sku: pe_sku.value.trim(),
+        active: pe_active.checked,
+        image: pe_image.value.trim()
+      };
+      if(!obj.title){ alert('Title required'); return; }
+      if(await fsAvailable()){
+        if(editingProdId){ await fsUpdate('products', editingProdId, obj); }
+        else {
+          const add = await fsAdd('products', obj);
+          obj.id = add?.id || ('lp'+Date.now());
         }
-        const csv = rows.map(r => r.map(x => `"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n');
-        const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'orders.csv'; a.click(); URL.revokeObjectURL(a.href);
+        const fs = await fsList('products','title'); if(fs) PRODUCTS = fs;
+      } else {
+        if(editingProdId){
+          const i=PRODUCTS.findIndex(x=>x.id===editingProdId);
+          if(i>=0) PRODUCTS[i] = { ...PRODUCTS[i], ...obj };
+        } else {
+          obj.id = 'lp'+Date.now();
+          PRODUCTS.push(obj);
+        }
+        writeLocal(K.products, PRODUCTS);
       }
-    };
+      pEditor.classList.add('hidden');
+      renderPGrid();
+    });
 
-    // kick both
-    Products.reload();
-    Orders.reload();
+    document.getElementById('pe_delete').addEventListener('click', async ()=>{
+      if(!editingProdId) return;
+      if(!confirm('Delete this product?')) return;
+      if(await fsAvailable()){
+        await fsDelete('products', editingProdId);
+        const fs = await fsList('products','title'); if(fs) PRODUCTS = fs;
+      } else {
+        PRODUCTS = PRODUCTS.filter(x=>x.id!==editingProdId);
+        writeLocal(K.products, PRODUCTS);
+      }
+      pEditor.classList.add('hidden');
+      renderPGrid();
+    });
+
+    document.getElementById('pSearch').addEventListener('submit', e=>{ e.preventDefault(); renderPGrid(); });
+    pSort.addEventListener('change', renderPGrid);
+
+    // ------------- HERO SLIDES -------------
+    let HERO = [];
+    async function loadHero(){
+      const fs = await fsList('heroSlides','sort');
+      if(fs){ HERO = fs; renderHList(); return; }
+      HERO = readLocal(K.hero, []);
+      renderHList();
+    }
+
+    const hList = document.getElementById('hList');
+    const hEditor = document.getElementById('hEditor');
+    const he_title = document.getElementById('he_title');
+    const he_link  = document.getElementById('he_link');
+    const he_image = document.getElementById('he_image');
+    const he_sort  = document.getElementById('he_sort');
+    const he_active= document.getElementById('he_active');
+    let editingSlideId = null;
+
+    function renderHList(){
+      const sorted = [...HERO].sort((a,b)=> Number(a.sort||0)-Number(b.sort||0));
+      hList.innerHTML = sorted.map(s=>`
+        <div class="rounded-2xl border p-3 flex items-center gap-3">
+          <img src="${esc(s.image||'')}" class="h-16 w-24 object-cover rounded-md border">
+          <div class="flex-1">
+            <div class="font-semibold">${esc(s.title||'')}</div>
+            <div class="text-xs text-gray-600">Sort ${Number(s.sort||0)} • ${s.active!==false?'Active':'Hidden'}</div>
+            <div class="text-xs text-gray-600 truncate">${esc(s.link||'')}</div>
+          </div>
+          <button class="btn" onclick="editSlide('${s.id}')">Edit</button>
+        </div>
+      `).join('');
+    }
+
+    window.editSlide = function(id){
+      const s = HERO.find(x=>x.id===id);
+      if(!s) return;
+      editingSlideId = id;
+      he_title.value = s.title||'';
+      he_link.value  = s.link||'';
+      he_image.value = s.image||'';
+      he_sort.value  = Number(s.sort||1);
+      he_active.checked = s.active!==false;
+      hEditor.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('newSlide').addEventListener('click', ()=>{
+      editingSlideId = null;
+      he_title.value=''; he_link.value=''; he_image.value=''; he_sort.value=1; he_active.checked=true;
+      hEditor.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.getElementById('he_cancel').addEventListener('click', ()=> hEditor.classList.add('hidden'));
+
+    document.getElementById('he_save').addEventListener('click', async ()=>{
+      const obj = {
+        title: he_title.value.trim(),
+        link: he_link.value.trim(),
+        image: he_image.value.trim(),
+        sort: Number(he_sort.value||1),
+        active: he_active.checked
+      };
+      if(!obj.image){ alert('Image URL required'); return; }
+      if(await fsAvailable()){
+        if(editingSlideId) await fsUpdate('heroSlides', editingSlideId, obj);
+        else {
+          const add = await fsAdd('heroSlides', obj);
+          obj.id = add?.id || ('hs'+Date.now());
+        }
+        const fs = await fsList('heroSlides','sort'); if(fs) HERO = fs;
+      } else {
+        if(editingSlideId){
+          const i=HERO.findIndex(x=>x.id===editingSlideId);
+          if(i>=0) HERO[i] = { ...HERO[i], ...obj };
+        } else {
+          obj.id = 'hs'+Date.now();
+          HERO.push(obj);
+        }
+        writeLocal(K.hero, HERO);
+      }
+      hEditor.classList.add('hidden'); renderHList();
+    });
+
+    document.getElementById('he_delete').addEventListener('click', async ()=>{
+      if(!editingSlideId) return;
+      if(!confirm('Delete this slide?')) return;
+      if(await fsAvailable()){
+        await fsDelete('heroSlides', editingSlideId);
+        const fs = await fsList('heroSlides','sort'); if(fs) HERO = fs;
+      } else {
+        HERO = HERO.filter(x=>x.id!==editingSlideId);
+        writeLocal(K.hero, HERO);
+      }
+      hEditor.classList.add('hidden'); renderHList();
+    });
+
+    // ------------- ORDERS -------------
+    async function loadOrders(){
+      let arr = null;
+      if(await fsAvailable()){
+        try{
+          const { collection, getDocs, query, orderBy } =
+            await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+          const snap = await getDocs(query(collection(window.db,'orders'), orderBy('createdAt','desc')));
+          arr = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+        }catch(e){ console.warn('orders fs', e); }
+      }
+      if(!arr) arr = readLocal(K.orders, []);
+      renderOrders(arr);
+    }
+    const oList = document.getElementById('oList');
+    function renderOrders(orders){
+      if(!orders.length){ oList.innerHTML = `<div class="p-6 text-gray-600 text-center rounded-2xl border">No orders yet.</div>`; return; }
+      oList.innerHTML = orders.map(o=>{
+        const items = (o.items||[]).map(i=>`${esc(i.title)} × ${Number(i.qty||0)} = ${fmt(Number(i.price||0)*Number(i.qty||0))}`).join('<br>');
+        const amt = fmt(o.amount || (o.items||[]).reduce((s,i)=>s+Number(i.price||0)*Number(i.qty||0),0));
+        const when = o.createdAt?.seconds ? new Date(o.createdAt.seconds*1000) : (o.createdAt ? new Date(o.createdAt) : null);
+        const ts = when ? when.toLocaleString() : '';
+        return `
+          <div class="rounded-2xl border p-3 grid md:grid-cols-[1fr_auto] gap-3">
+            <div>
+              <div class="font-semibold">Order ${esc(o.orderId || o.id || '')}</div>
+              <div class="text-xs text-gray-600">Placed: ${esc(ts)} • ${esc(o.paymentMode||'')} • ${esc(o.paymentStatus||'')}</div>
+              <div class="mt-2 text-sm">${items}</div>
+              <div class="mt-2 text-xs text-gray-600">Customer: ${esc(o.customer?.name||'')} • ${esc(o.customer?.phone||'')}</div>
+              <div class="text-xs text-gray-600">${esc(o.customer?.address||'')} ${esc(o.customer?.city||'')} ${esc(o.customer?.pincode||'')}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-extrabold text-brand-700">${amt}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    document.getElementById('refreshOrders').addEventListener('click', loadOrders);
+
+    // ------------- SETTINGS (EXPORT/IMPORT) -------------
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+      const data = {
+        products: readLocal(K.products, PRODUCTS),
+        categories: readLocal(K.categories, CATS),
+        hero: readLocal(K.hero, HERO)
+      };
+      const blob = new Blob([JSON.stringify(data,null,2)], { type:'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'anaa-backup.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importFile').addEventListener('change', async (e)=>{
+      const file = e.target.files[0]; if(!file) return;
+      const text = await file.text();
+      try{
+        const data = JSON.parse(text);
+        if(Array.isArray(data.products)) { writeLocal(K.products, data.products); PRODUCTS = data.products; }
+        if(Array.isArray(data.categories)) { writeLocal(K.categories, data.categories); CATS = data.categories; }
+        if(Array.isArray(data.hero)) { writeLocal(K.hero, data.hero); HERO = data.hero; }
+        renderPGrid(); renderCatList(); fillCatSelect(); renderHList();
+        alert('Imported!');
+      }catch{ alert('Invalid JSON'); }
+      e.target.value = '';
+    });
+
+    // ------------- INIT -------------
+    (async function init(){
+      await loadCategories();
+      await loadProducts();
+      await loadHero();
+      await loadOrders();
+    })();
+
+    // expose for inline handlers
+    window.editProduct = window.editProduct;
+    window.toggleActive = window.toggleActive;
+    window.editCat = window.editCat;
+    window.editSlide = window.editSlide;
   </script>
 </body>
 </html>
