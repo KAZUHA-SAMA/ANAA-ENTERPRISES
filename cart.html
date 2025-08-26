@@ -242,7 +242,12 @@
       totals();
     }
 
-    function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]); }
+    function escapeHTML(s){
+  return String(s||'').replace(/[&<>"']/g, m => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'}[m]
+  ));
+}
+
 
     function totals(){
       const cart = readCart();
