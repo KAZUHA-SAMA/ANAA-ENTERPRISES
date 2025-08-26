@@ -3,222 +3,267 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ANAA ENTERPRISES — Home Essentials</title>
-  <meta name="description" content="ANAA ENTERPRISES: furniture, electronics & home appliances, household and plastic items. Fast local delivery, COD available."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>ANAA ENTERPRISES — Home</title>
+  <meta name="description" content="Home essentials at ANAA ENTERPRISES: electronics, appliances, plasticware, furniture and more."/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
-        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
         extend: {
-          colors: {
-            brand: { 50:'#eef8ff',100:'#d6edff',200:'#b1dfff',300:'#80cdff',400:'#47b3ff',500:'#1897f2',600:'#0f78c6',700:'#0d63a5',800:'#0f5488',900:'#113e63' }
+          colors: { brand: { 600:'#0f78c6', 700:'#0d63a5' } },
+          boxShadow: { soft:'0 20px 40px rgba(0,0,0,0.10)' },
+          keyframes: {
+            fadeInUp: { from:{ opacity:0, transform:'translateY(12px)' }, to:{ opacity:1, transform:'translateY(0)' } },
+            crossfade: { '0%':{opacity:0}, '100%':{opacity:1} }
           },
-          boxShadow: { soft:'0 10px 25px rgba(0,0,0,0.08)' }
+          animation: {
+            fadeInUp: 'fadeInUp 700ms ease both',
+            crossfade: 'crossfade 600ms ease'
+          }
         }
       }
     }
   </script>
   <style>
-    html { scroll-behavior: smooth }
-    .fade-in { animation: fade .5s ease both }
-    .slide-up { animation: up .45s ease both }
-    .slide-right { animation: right .45s ease both }
-    @keyframes fade { from{opacity:0} to{opacity:1} }
-    @keyframes up { from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
-    @keyframes right { from{opacity:0; transform:translateX(-12px)} to{opacity:1; transform:translateX(0)} }
+    /* smooth page transitions */
+    .page-enter { opacity: 0; transform: translateY(8px); }
+    .page-enter-active { transition: all .45s ease; opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
+
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-200">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
-    <a href="index.html" class="flex items-center gap-2">
-      <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
-      <div class="leading-tight">
-        <div class="text-lg font-extrabold tracking-tight">ANAA ENTERPRISES</div>
-        <div class="text-xs text-gray-500">Home needs, one place</div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
+        <div class="leading-tight">
+          <div class="text-lg font-extrabold tracking-tight">ANAA ENTERPRISES</div>
+          <div class="text-xs text-gray-500">Home needs, one place</div>
+        </div>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="index.html" class="hover:text-brand-700">Home</a>
+        <a href="products.html" class="hover:text-brand-700">Products</a>
+        <a href="cart.html" class="hover:text-brand-700">
+          Cart (<span id="cartCount">0</span>)
+        </a>
+        <a href="signin.html" class="hover:text-brand-700">Sign In</a>
+        <a href="signup.html" class="hover:text-brand-700">Sign Up</a>
+      </nav>
+
+      <!-- Mobile -->
+      <button id="navToggle" class="md:hidden p-2 rounded-lg border text-sm">Menu</button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div id="mobileNav" class="md:hidden hidden border-t bg-white">
+      <div class="mx-auto max-w-7xl px-4 py-3 text-sm">
+        <a href="index.html" class="block py-2">Home</a>
+        <a href="products.html" class="block py-2">Products</a>
+        <a href="cart.html" class="block py-2">Cart (<span data-cart-count>0</span>)</a>
+        <a href="signin.html" class="block py-2">Sign In</a>
+        <a href="signup.html" class="block py-2">Sign Up</a>
       </div>
-    </a>
-    <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
-      <a href="products.html" class="hover:text-brand-700">Products</a>
-      <a href="cart.html" class="hover:text-brand-700">Cart (<span id="cartCount">0</span>)</a>
-      <a href="signin.html" class="hover:text-brand-700">Sign In</a>
-      <a href="signup.html" class="hover:text-brand-700">Sign Up</a>
-    </nav>
-  </div>
-</header>
+    </div>
+  </header>
 
   <!-- Hero -->
-  <section class="relative overflow-hidden bg-gradient-to-br from-brand-50 to-white">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid lg:grid-cols-2 gap-8 items-center">
-      <div class="slide-right">
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight">Home essentials, delivered fast.</h1>
-        <p class="mt-3 text-gray-600 max-w-prose">Furniture, electronics & home appliances, household and plastic items. Local delivery in Thoubal and nearby pincodes. COD available.</p>
-        <div class="mt-6 flex gap-3">
-          <a href="products.html" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-white font-semibold shadow-soft hover:bg-brand-700">Shop now
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-          </a>
-          <a href="categories.html" class="inline-flex items-center gap-2 rounded-xl border border-gray-300 px-5 py-3 font-semibold hover:bg-gray-50">Browse categories</a>
-        </div>
-        <div class="mt-6 flex gap-6 text-sm text-gray-600">
-          <div class="flex items-center gap-2"><span class="h-6 w-6 rounded-full bg-white grid place-content-center border"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v4H3zM3 7h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span> COD available</div>
-          <div class="flex items-center gap-2"><span class="h-6 w-6 rounded-full bg-white grid place-content-center border"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M12 3v18"/></svg></span> Free pickup</div>
-          <div class="flex items-center gap-2"><span class="h-6 w-6 rounded-full bg-white grid place-content-center border"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4-4 4 4M12 12V3"/></svg></span> Same‑day local</div>
+  <section class="page-enter">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-14 grid lg:grid-cols-2 gap-8 items-center">
+      <div class="animate-fadeInUp">
+        <h1 class="text-4xl font-extrabold tracking-tight">Everything your home needs, in one stop.</h1>
+        <p class="mt-3 text-gray-600">Electronics, kitchenware, plastic storage, fans, furniture and more. Order online with home delivery or pick up in-store.</p>
+        <div class="mt-5 flex gap-3">
+          <a href="products.html" class="rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-3">Shop products</a>
+          <a href="cart.html" class="rounded-xl border px-5 py-3 font-semibold hover:bg-gray-50">View cart</a>
         </div>
       </div>
-      <div class="relative slide-up">
-        <div class="aspect-[4/3] rounded-3xl bg-white border shadow-soft overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1601999801378-334353f57b9e?q=80&w=1200&auto=format&fit=crop" alt="Home essentials" class="h-full w-full object-cover"/>
-        </div>
-        <div class="absolute -bottom-6 -right-6 hidden md:block">
-          <div class="rounded-2xl bg-white border shadow-soft p-4 w-64">
-            <div class="text-sm font-semibold">Pincode delivery check</div>
-            <div class="mt-2 flex">
-              <input id="pincodeInput" maxlength="6" class="flex-1 rounded-l-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none" placeholder="Enter pincode"/>
-              <button onclick="checkPincode()" class="rounded-r-xl bg-brand-600 px-3 py-2 text-white text-sm font-semibold">Check</button>
-            </div>
-            <div id="pincodeResult" class="mt-2 text-xs text-gray-600"></div>
-          </div>
-        </div>
+      <div class="rounded-3xl overflow-hidden border shadow-soft animate-fadeInUp" style="animation-delay:120ms">
+        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1600&auto=format&fit=crop"
+             alt="Home essentials" class="w-full h-full object-cover">
       </div>
     </div>
   </section>
 
-  <!-- Categories Preview -->
-  <section class="py-10">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex items-end justify-between">
-        <h2 class="text-2xl font-extrabold tracking-tight">Shop by category</h2>
-        <a href="categories.html" class="text-sm font-semibold text-brand-700">View all</a>
-      </div>
-      <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <a href="categories.html#Furniture" class="group rounded-2xl border bg-white p-4 hover:shadow-soft transition">
-          <div class="aspect-square rounded-xl bg-gradient-to-br from-brand-50 to-white grid place-content-center">
-            <svg class="h-10 w-10 text-brand-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 7v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7"/></svg>
-          </div>
-          <div class="mt-3 font-semibold">Furniture</div>
-        </a>
-        <a href="categories.html#Electronics%20%26%20Home%20appliances" class="group rounded-2xl border bg-white p-4 hover:shadow-soft transition">
-          <div class="aspect-square rounded-xl bg-gradient-to-br from-brand-50 to-white grid place-content-center">
-            <svg class="h-10 w-10 text-brand-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 19h8m-6 0V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v14"/></svg>
-          </div>
-          <div class="mt-3 font-semibold">Electronics & Home appliances</div>
-        </a>
-        <a href="categories.html#Household%20item" class="group rounded-2xl border bg-white p-4 hover:shadow-soft transition">
-          <div class="aspect-square rounded-xl bg-gradient-to-br from-brand-50 to-white grid place-content-center">
-            <svg class="h-10 w-10 text-brand-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h3m12 0h3M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0z"/></svg>
-          </div>
-          <div class="mt-3 font-semibold">Household item</div>
-        </a>
-        <a href="categories.html#Plastic%20item" class="group rounded-2xl border bg-white p-4 hover:shadow-soft transition">
-          <div class="aspect-square rounded-xl bg-gradient-to-br from-brand-50 to-white grid place-content-center">
-            <svg class="h-10 w-10 text-brand-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8h18M7 8v10a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V8"/></svg>
-          </div>
-          <div class="mt-3 font-semibold">Plastic item</div>
-        </a>
-      </div>
+  <!-- Categories with auto-slide images -->
+  <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
+    <div class="flex items-end justify-between">
+      <h2 class="text-2xl font-extrabold">Shop by category</h2>
+      <a href="products.html" class="text-sm font-semibold text-brand-700 hover:underline">Browse all →</a>
     </div>
-  </section>
 
-  <!-- Highlights / Promotions -->
-  <section class="py-10 bg-white border-y">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="grid md:grid-cols-3 gap-4">
-        <div class="rounded-2xl border p-6 slide-up">
-          <div class="text-lg font-extrabold">Under ₹499</div>
-          <p class="mt-1 text-sm text-gray-600">Daily essentials that don’t hurt.</p>
-          <a href="products.html#under499" class="mt-3 inline-block text-sm font-semibold text-brand-700">Shop deals →</a>
-        </div>
-        <div class="rounded-2xl border p-6 slide-up" style="animation-delay:.05s">
-          <div class="text-lg font-extrabold">Summer cooling</div>
-          <p class="mt-1 text-sm text-gray-600">Fans and more to survive power cuts.</p>
-          <a href="products.html#fans" class="mt-3 inline-block text-sm font-semibold text-brand-700">View fans →</a>
-        </div>
-        <div class="rounded-2xl border p-6 slide-up" style="animation-delay:.1s">
-          <div class="text-lg font-extrabold">Kitchen upgrades</div>
-          <p class="mt-1 text-sm text-gray-600">Rice cookers, kettles, pressure cookers.</p>
-          <a href="products.html#kitchen" class="mt-3 inline-block text-sm font-semibold text-brand-700">See appliances →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Why us -->
-  <section id="why" class="py-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-6">
-      <div class="rounded-2xl border p-6 hover:shadow-soft transition">
-        <div class="text-lg font-bold">Trusted local shop</div>
-        <p class="mt-2 text-sm text-gray-600">Serving Thoubal customers for everyday essentials and appliances.</p>
-      </div>
-      <div class="rounded-2xl border p-6 hover:shadow-soft transition">
-        <div class="text-lg font-bold">Fast delivery</div>
-        <p class="mt-2 text-sm text-gray-600">Same‑day delivery for select pincodes. Pickup available.</p>
-      </div>
-      <div class="rounded-2xl border p-6 hover:shadow-soft transition">
-        <div class="text-lg font-bold">COD + secure payments</div>
-        <p class="mt-2 text-sm text-gray-600">Pay on delivery or via UPI/cards (soon).</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" class="py-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="grid md:grid-cols-2 gap-8">
-        <div class="rounded-2xl border bg-white p-6">
-          <div class="text-xl font-extrabold">Contact us</div>
-          <p class="mt-2 text-sm text-gray-600">Address: Thoubal, Manipur • Phone: +91‑XXXXXXXXXX • WhatsApp available</p>
-          <form class="mt-4 grid gap-3" onsubmit="event.preventDefault(); alert('Thanks! We\'ll reply soon.'); this.reset();">
-            <input class="rounded-xl border border-gray-300 px-3 py-2 text-sm" placeholder="Your name" required />
-            <input type="tel" class="rounded-xl border border-gray-300 px-3 py-2 text-sm" placeholder="Phone" />
-            <textarea class="rounded-xl border border-gray-300 px-3 py-2 text-sm" placeholder="Message" rows="4" required></textarea>
-            <button class="rounded-xl bg-brand-600 px-4 py-2 text-white font-semibold hover:bg-brand-700">Send</button>
-          </form>
-        </div>
-        <div class="rounded-2xl border bg-white p-6">
-          <div class="text-xl font-extrabold">Store hours</div>
-          <ul class="mt-3 text-sm text-gray-700 space-y-1">
-            <li>Mon–Sat: 9:00 AM – 7:30 PM</li>
-            <li>Sunday: 10:00 AM – 2:00 PM</li>
-          </ul>
-          <div class="mt-4 text-sm text-gray-600">Follow us: @anaaenterprises</div>
-        </div>
-      </div>
+    <div id="catGrid" class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Cards injected by JS -->
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="border-t bg-white">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-600 flex flex-col sm:flex-row justify-between items-center gap-3">
-      <div>© <span id="year"></span> ANAA ENTERPRISES. All rights reserved.</div>
-      <div class="flex items-center gap-4">
-        <a href="#" class="hover:text-brand-700">Return policy</a>
-        <a href="#" class="hover:text-brand-700">Shipping</a>
-        <a href="#" class="hover:text-brand-700">Privacy</a>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 grid gap-6 sm:grid-cols-3 text-sm text-gray-700">
+      <div>
+        <div class="font-semibold text-gray-900">ANAA ENTERPRISES</div>
+        L.I. Shopping Complex, Singjamei Bazar<br>
+        Imphal West – 795008, Manipur
       </div>
+      <div>
+        <div class="font-semibold text-gray-900">Contact</div>
+        WhatsApp: <a href="https://wa.me/917005023608" class="text-brand-700 hover:underline">7005023608</a><br>
+        Email: <a href="mailto:joykumarkaram@gmail.com" class="text-brand-700 hover:underline">joykumarkaram@gmail.com</a>
+      </div>
+      <div>
+        <div class="font-semibold text-gray-900">Business Hours</div>
+        Mon – Sat: 9:00 AM – 6:00 PM<br>
+        Sunday: 10:00 AM – 3:00 PM
+      </div>
+    </div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 text-xs text-gray-500 text-center border-t">
+      © <span id="year"></span> ANAA ENTERPRISES. All rights reserved.
     </div>
   </footer>
 
-  <!-- Floating WhatsApp -->
-  <a href="https://wa.me/910000000000" target="_blank" class="fixed bottom-4 right-4 rounded-full bg-green-500 text-white p-4 shadow-lg hover:bg-green-600" aria-label="WhatsApp">
-    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20.52 3.48A11.9 11.9 0 0012.02 0 11.99 11.99 0 000 12c0 2.11.55 4.11 1.6 5.9L0 24l6.25-1.63A12.03 12.03 0 0012 24a12 12 0 008.52-20.52zM12 22a10 10 0 01-5.1-1.4l-.37-.22-3.78.99 1.02-3.68-.24-.38A10 10 0 1122 12 10 10 0 0112 22zm5.43-7.57c-.3-.15-1.76-.86-2.03-.95-.27-.1-.47-.15-.67.15-.2.3-.77.95-.94 1.15-.17.2-.35.22-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.77-1.67-2.07-.17-.3-.02-.47.13-.62.13-.12.3-.32.45-.48.15-.16.2-.27.3-.45.1-.17.05-.32-.02-.47-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.5.07-.76.35-.26.27-1 1-1 2.43s1.03 2.82 1.18 3.02c.15.2 2.02 3.08 4.87 4.32.68.3 1.21.48 1.62.61.68.22 1.3.19 1.8.12.55-.08 1.76-.72 2-1.42.25-.7.25-1.3.17-1.42-.08-.13-.28-.2-.57-.35z"/></svg>
-  </a>
+  <!-- Scripts: nav, cart badge, animations, category slider -->
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile toggle
+    document.getElementById('navToggle')?.addEventListener('click', ()=>{
+      document.getElementById('mobileNav').classList.toggle('hidden');
+    });
+
+    // Cart badge (shared)
+    const CART_KEY = 'anaa_cart';
+    function getCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; } }
+    function cartCount(){ return getCart().reduce((s,i)=> s + Number(i.qty||0), 0); }
+    function renderCartBadge(){
+      document.getElementById('cartCount')?.textContent = cartCount();
+      document.querySelector('[data-cart-count]')?.textContent = cartCount();
+    }
+    window.addEventListener('storage', e => { if(e.key === CART_KEY) renderCartBadge(); });
+    window.addEventListener('cart-updated', renderCartBadge);
+    renderCartBadge();
+
+    // Scroll reveal for sections/cards
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('animate-fadeInUp');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.page-enter, [data-reveal]').forEach(el=>io.observe(el));
+  </script>
 
   <script>
-    const SERVICE_PINCODES = ['795101','795138','795148','795103'];
-    const fmt = n => '₹' + Number(n||0).toLocaleString('en-IN');
+    // Category data with image slides; clicking goes to products.html?cat=slug
+    const CATEGORIES = [
+      {
+        label:'Electronics & Appliances', slug:'electronics',
+        images:[
+          'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1621939514649-280153f2c27c?q=80&w=800&auto=format&fit=crop'
+        ]
+      },
+      {
+        label:'Kitchen & Cookware', slug:'kitchen',
+        images:[
+          'https://images.unsplash.com/photo-1556909114-205096659c24?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1526318472358-6e9f3f4042f3?q=80&w=800&auto=format&fit=crop'
+        ]
+      },
+      {
+        label:'Cleaning & Household', slug:'household',
+        images:[
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1591278887043-34e2f0f4f7b8?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=800&auto=format&fit=crop'
+        ]
+      },
+      {
+        label:'Storage & Plastic', slug:'plastic',
+        images:[
+          'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1603294237578-774ecf2d7d89?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1589287700475-3c7b4b30c1df?q=80&w=800&auto=format&fit=crop'
+        ]
+      },
+      {
+        label:'Fans & Air Care', slug:'fans',
+        images:[
+          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1529926050652-c34d5d9c1739?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1582711012124-a56cf82307df?q=80&w=800&auto=format&fit=crop'
+        ]
+      },
+      {
+        label:'Furniture & Seating', slug:'furniture',
+        images:[
+          'https://images.unsplash.com/photo-1582582621959-48b89570f8a1?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1486946255434-2466348c2166?q=80&w=800&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800&auto=format&fit=crop'
+        ]
+      }
+    ];
 
-    function checkPincode(){
-      const pin = document.getElementById('pincodeInput').value.trim();
-      const ok = SERVICE_PINCODES.includes(pin);
-      document.getElementById('pincodeResult').textContent = pin? (ok? 'Delivery available. Same‑day for local orders before 3 PM.' : 'Sorry, not in our service area yet.') : '';
-    }
-    document.getElementById('openMobile').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('hidden'));
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // Render category cards
+    const catGrid = document.getElementById('catGrid');
+    catGrid.innerHTML = CATEGORIES.map((c, idx)=>`
+      <a href="products.html?cat=${encodeURIComponent(c.slug)}"
+         class="group rounded-3xl border bg-white overflow-hidden hover:shadow-soft transition will-change-transform"
+         data-reveal style="animation-delay:${100 + (idx*60)}ms">
+        <div class="relative">
+          <img data-slide="img" src="${c.images[0]}" alt="${c.label}"
+               class="w-full aspect-[4/3] object-cover opacity-0"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent"></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <div class="inline-flex rounded-full bg-white/90 text-gray-900 px-3 py-1 text-xs font-semibold shadow">
+              ${c.label}
+            </div>
+          </div>
+        </div>
+        <div class="p-4">
+          <div class="text-sm text-gray-600">Tap to view items</div>
+        </div>
+      </a>
+    `).join('');
+
+    // Fade-in initial images
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('[data-slide="img"]').forEach(img=>{
+        img.classList.add('animate-crossfade');
+        img.style.opacity = 1;
+      });
+    });
+
+    // Per-card slideshow with soft crossfade
+    const cards = Array.from(catGrid.querySelectorAll('a'));
+    cards.forEach((card, i)=>{
+      const data = CATEGORIES[i];
+      const imgEl = card.querySelector('[data-slide="img"]');
+      let ix = 0;
+      setInterval(()=>{
+        ix = (ix + 1) % data.images.length;
+        const next = new Image();
+        next.onload = ()=>{
+          imgEl.classList.remove('animate-crossfade');
+          imgEl.style.opacity = 0;
+          setTimeout(()=>{
+            imgEl.src = next.src;
+            imgEl.classList.add('animate-crossfade');
+            imgEl.style.opacity = 1;
+          }, 40);
+        };
+        next.src = data.images[ix];
+      }, 2600);
+    });
   </script>
 </body>
 </html>
