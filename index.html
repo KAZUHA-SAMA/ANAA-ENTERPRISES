@@ -4,7 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ANAA ENTERPRISES — Home</title>
-  <meta name="description" content="Furniture, Electronics, Home Appliances, Household Products, Plastic Products, Blankets & Mattress."/>
+  <meta name="description" content="Furniture, Electronics, Home Appliances, Household Products, Plastic Products, Blankets & Mattress. Order online with home delivery."/>
+
+  <!-- Social share (Facebook/Instagram) -->
+  <meta property="og:title" content="ANAA ENTERPRISES — Home essentials online" />
+  <meta property="og:description" content="Furniture, Electronics, Home Appliances, Household & Plastic Products, Blankets & Mattress. Order with home delivery." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://YOUR-NETLIFY-SITE.netlify.app/" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1200&auto=format&fit=crop" />
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -34,9 +42,13 @@
         <span>WhatsApp: <a href="https://wa.me/917005023608" class="underline">+91 70050 23608</a></span>
         <span class="hidden sm:inline">Email: <a href="mailto:joykumarkaram@gmail.com" class="underline">joykumarkaram@gmail.com</a></span>
       </div>
-      <div class="flex items-center gap-4">
-        <a href="signin.html" class="hover:underline">Sign In</a>
-        <a href="signup.html" class="hover:underline">Sign Up</a>
+      <div class="flex items-center gap-3">
+        <a href="https://www.facebook.com/share/19ixy8Wgjs/?mibextid=wwXIfr" target="_blank" rel="noopener" class="inline-flex h-7 w-7 rounded-full bg-white/10 hover:bg-white/20 items-center justify-center" aria-label="Facebook">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-white"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.3V12h2.3V9.8c0-2.3 1.4-3.6 3.5-3.6 1 0 2 .2 2 .2v2.2h-1.1c-1.1 0-1.4.7-1.4 1.4V12h2.5l-.4 2.9h-2.1v7A10 10 0 0 0 22 12z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/karam_joykumar?igsh=MTJ3N2Nudm4xanVkZw==" target="_blank" rel="noopener" class="inline-flex h-7 w-7 rounded-full bg-white/10 hover:bg-white/20 items-center justify-center" aria-label="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-white"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zM18 6.3a1.2 1.2 0 1 1-1.2 1.2A1.2 1.2 0 0 1 18 6.3z"/></svg>
+        </a>
       </div>
     </div>
   </div>
@@ -82,20 +94,35 @@
     </div>
   </header>
 
-  <!-- Location / Delivery bar -->
+  <!-- Delivery bar (per-user, editable) -->
   <section class="bg-white border-b">
     <div class="mx-auto max-w-7xl px-4 py-3 text-sm flex items-center gap-2">
       <span class="inline-flex items-center justify-center h-7 w-7 rounded-full bg-gray-100">📍</span>
-      Delivering to <strong class="ml-1">Imphal 795008</strong>
-      <a href="#" class="ml-2 text-brand-700 font-semibold hover:underline text-xs">Change</a>
+      Delivering to <strong id="locText" class="ml-1">set your location</strong>
+      <button id="locBtn" class="ml-2 text-brand-700 font-semibold hover:underline text-xs">Set / Change</button>
     </div>
   </section>
+  <!-- Location modal -->
+  <div id="locModal" class="hidden fixed inset-0 z-50 bg-black/40">
+    <div class="mx-auto max-w-md mt-24 p-4">
+      <div class="rounded-2xl border bg-white p-4">
+        <div class="text-lg font-extrabold">Delivery location</div>
+        <p class="text-xs text-gray-600 mt-1">Set your city and pincode.</p>
+        <div class="mt-3 grid gap-2">
+          <input id="cityInput" class="rounded-xl border px-3 py-2 text-sm" placeholder="City">
+          <input id="pinInput" class="rounded-xl border px-3 py-2 text-sm" placeholder="Pincode">
+        </div>
+        <div class="mt-4 flex justify-end gap-2">
+          <button id="locCancel" class="rounded-xl border px-3 py-2 text-sm">Cancel</button>
+          <button id="locSave" class="rounded-xl bg-brand-600 text-white px-3 py-2 text-sm">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Hero carousel -->
   <section class="carousel border-b bg-white">
-    <div class="carousel-track" id="heroTrack">
-      <!-- slides injected by JS -->
-    </div>
+    <div class="carousel-track" id="heroTrack"><!-- slides via JS --></div>
     <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2" id="heroDots"></div>
   </section>
 
@@ -141,15 +168,6 @@
     </div>
   </section>
 
-  <!-- Trust tiles -->
-  <section class="bg-gray-50 border-t">
-    <div class="mx-auto max-w-7xl px-4 py-8 grid sm:grid-cols-3 gap-4 text-center text-sm">
-      <div class="rounded-2xl border bg-white p-4">🚚 Free delivery over ₹999</div>
-      <div class="rounded-2xl border bg-white p-4">🛠 Warranty on appliances</div>
-      <div class="rounded-2xl border bg-white p-4">🧾 GST invoice available</div>
-    </div>
-  </section>
-
   <!-- Newsletter -->
   <section class="bg-white border-t">
     <div class="mx-auto max-w-7xl px-4 py-10 text-center">
@@ -174,6 +192,16 @@
         <div class="font-semibold text-gray-900">Contact</div>
         WhatsApp: <a href="https://wa.me/917005023608" class="text-brand-700 hover:underline">7005023608</a><br>
         Email: <a href="mailto:joykumarkaram@gmail.com" class="text-brand-700 hover:underline">joykumarkaram@gmail.com</a>
+        <div class="mt-2 flex gap-2">
+          <a href="https://www.facebook.com/share/19ixy8Wgjs/?mibextid=wwXIfr" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border hover:bg-gray-50 text-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7h-2.3V12h2.3V9.8c0-2.3 1.4-3.6 3.5-3.6 1 0 2 .2 2 .2v2.2h-1.1c-1.1 0-1.4.7-1.4 1.4V12h2.5l-.4 2.9h-2.1v7A10 10 0 0 0 22 12z"/></svg>
+            Facebook
+          </a>
+          <a href="https://www.instagram.com/karam_joykumar?igsh=MTJ3N2Nudm4xanVkZw==" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border hover:bg-gray-50 text-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zM18 6.3a1.2 1.2 0 1 1-1.2 1.2A1.2 1.2 0 0 1 18 6.3z"/></svg>
+            Instagram
+          </a>
+        </div>
       </div>
       <div>
         <div class="font-semibold text-gray-900">Business Hours</div>
@@ -186,14 +214,53 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Global helpers: user/auth + cart badge -->
   <script>
+    // Year and mobile nav
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Mobile nav + search forwarding
     document.getElementById('navToggle')?.addEventListener('click', ()=> {
       document.getElementById('mobileNav').classList.toggle('hidden');
     });
+
+    // User storage + helpers
+    const USER_KEY = 'anaa_user';
+    function getUser(){ try { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); } catch { return null; } }
+    function setUser(patch){ const cur=getUser()||{}; const next={...cur, ...patch}; localStorage.setItem(USER_KEY, JSON.stringify(next)); return next; }
+    function requireUser(returnTo){ const u=getUser(); if(!u){ location.href='signup.html?return='+encodeURIComponent(returnTo||location.pathname); return false; } return true; }
+    function signOut(){ localStorage.removeItem(USER_KEY); location.reload(); }
+
+    // Swap navbar auth links if signed in
+    (function(){
+      const nav = document.querySelector('header nav');
+      if(!nav) return;
+      const u = getUser();
+      if(u){
+        nav.querySelectorAll('a[href*="signin"],a[href*="signup"]').forEach(a=>a.remove());
+        const greet = document.createElement('span');
+        greet.className = 'text-sm text-gray-600';
+        greet.textContent = 'Hi, ' + (u.name || u.email || 'Customer');
+        const out = document.createElement('a');
+        out.href = '#'; out.className = 'hover:text-brand-700 text-sm font-semibold'; out.textContent = 'Sign Out';
+        out.addEventListener('click', e=>{ e.preventDefault(); signOut(); });
+        nav.appendChild(greet); nav.appendChild(out);
+      }
+    })();
+
+    // Location bar wiring
+    const locText = document.getElementById('locText');
+    const locBtn  = document.getElementById('locBtn');
+    const locModal= document.getElementById('locModal');
+    const cityIn  = document.getElementById('cityInput');
+    const pinIn   = document.getElementById('pinInput');
+    function renderLocation(){ const u=getUser(); const city=u?.city?.trim(); const pin=u?.pincode?.trim(); locText.textContent=(city||pin)?[city,pin].filter(Boolean).join(' '):'set your location'; }
+    function openLocModal(){ const u=getUser()||{}; cityIn.value=u.city||''; pinIn.value=u.pincode||''; locModal.classList.remove('hidden'); }
+    function closeLocModal(){ locModal.classList.add('hidden'); }
+    document.getElementById('locSave')?.addEventListener('click', ()=>{ setUser({ city: cityIn.value.trim(), pincode: pinIn.value.trim() }); renderLocation(); closeLocModal(); });
+    document.getElementById('locCancel')?.addEventListener('click', closeLocModal);
+    locBtn?.addEventListener('click', openLocModal);
+    renderLocation();
+
+    // Search forwarders → products.html?q=...
     document.getElementById('searchForm')?.addEventListener('submit', e=>{
       e.preventDefault(); const q=document.getElementById('q').value.trim(); location.href='products.html'+(q?('?q='+encodeURIComponent(q)):'');
     });
@@ -205,10 +272,7 @@
     const CART_KEY='anaa_cart';
     function getCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); } catch { return []; } }
     function cartCount(){ return getCart().reduce((s,i)=> s+Number(i.qty||0), 0); }
-    function renderCartBadge(){
-      document.getElementById('cartCount').textContent = cartCount();
-      document.querySelector('[data-cart-count]')?.textContent = cartCount();
-    }
+    function renderCartBadge(){ document.getElementById('cartCount').textContent = cartCount(); document.querySelector('[data-cart-count]')?.textContent = cartCount(); }
     window.addEventListener('storage', e=>{ if(e.key===CART_KEY) renderCartBadge(); });
     window.addEventListener('cart-updated', renderCartBadge);
     renderCartBadge();
@@ -233,7 +297,6 @@
         { title:'Storage & Plastic', image:'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop', link:'products.html?cat=plastic' }
       ];
     }
-
     async function loadCategories(){
       if(window.db){
         try{
@@ -253,7 +316,6 @@
         { label:'Blankets & Mattress', slug:'blankets', icon:'🛏️' }
       ];
     }
-
     async function loadOffers(){
       if(window.db){
         try{
@@ -271,7 +333,6 @@
         { id:'4', title:'Pressure Cooker 5L', price:2199, image:'https://images.unsplash.com/photo-1621939514649-280153f2c27c?q=80&w=800&auto=format&fit=crop', category:'Home Appliances' }
       ];
     }
-
     async function loadPopular(){
       if(window.db){
         try{
@@ -301,7 +362,6 @@
           <div class="absolute inset-0 flex items-center justify-center text-white text-2xl md:text-3xl font-extrabold text-center px-4">${esc(s.title||'')}</div>
         </a>`).join('');
       dots.innerHTML = slides.map((_,i)=>`<span data-dot="${i}" class="h-2 w-2 rounded-full bg-white/40"></span>`).join('');
-      // auto-slide
       let i=0; const total=slides.length;
       function go(n){
         i = (n+total)%total;
@@ -311,7 +371,6 @@
       setInterval(()=>go(i+1), 4000);
       go(0);
     }
-
     function renderCategories(cats){
       const chips = document.getElementById('catChips');
       chips.innerHTML = cats.map(c=>`
@@ -326,7 +385,6 @@
         </a>
       `).join('');
     }
-
     function renderOfferGrid(items){
       const box = document.getElementById('offerGrid');
       box.innerHTML = items.map(p=>`
@@ -342,7 +400,6 @@
         </div>
       `).join('');
     }
-
     let popular = [];
     function renderPopular(list){
       const pg = document.getElementById('popularGrid');
@@ -359,8 +416,6 @@
         </div>
       `).join('');
     }
-
-    // sorting/search for popular
     const gSearch = document.getElementById('gridSearch');
     const gSort = document.getElementById('gridSort');
     function applyPopular(){
@@ -376,8 +431,9 @@
     gSearch?.addEventListener('input', applyPopular);
     gSort?.addEventListener('change', applyPopular);
 
-    // Add to cart
+    // Add to cart. If you want to force signup before adding, uncomment the requireUser line.
     function addToCart(id,title,price,sku,image){
+      // if(!requireUser(location.pathname)) return;
       const cart = JSON.parse(localStorage.getItem(CART_KEY)||'[]');
       const i = cart.findIndex(x => String(x.id)===String(id));
       if(i>=0) cart[i].qty = Math.min(Number(cart[i].qty||0)+1, 99);
@@ -387,7 +443,7 @@
       alert(title + ' added to cart');
     }
 
-    // Boot: load all content
+    // Boot
     (async function(){
       renderHero(await loadHero());
       renderCategories(await loadCategories());
@@ -397,7 +453,7 @@
     })();
   </script>
 
-  <!-- If you use Firebase, include your firebase-config to expose window.db -->
+  <!-- Optional Firebase config to enable live editable data -->
   <!--
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
