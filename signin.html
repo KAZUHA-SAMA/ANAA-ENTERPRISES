@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign In — ANAA ENTERPRISES</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme:{ fontFamily:{ sans:['Inter','system-ui','sans-serif'] },
+      extend:{ colors:{ brand:{500:'#1897f2',600:'#0f78c6',700:'#0d63a5'} }, boxShadow:{soft:'0 12px 30px rgba(0,0,0,0.08)'} } } }
+  </script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
+        <div class="leading-tight">
+          <div class="text-lg font-extrabold">ANAA ENTERPRISES</div>
+          <div class="text-xs text-gray-500">Sign in</div>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="products.html" class="hover:text-brand-700">Products</a>
+        <a href="cart.html" class="hover:text-brand-700">Cart</a>
+        <a href="signup.html" class="text-brand-700">Sign Up</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="min-h-[80vh] grid place-items-center px-4">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-extrabold">Welcome back</h1>
+        <p class="text-sm text-gray-600 mt-1">Sign in to track orders and speed through checkout.</p>
+      </div>
+
+      <section class="rounded-2xl border bg-white p-6 shadow-soft">
+        <form class="grid gap-3" onsubmit="event.preventDefault(); fakeSignIn()">
+          <label class="text-sm font-semibold">Email
+            <input id="email" type="email" class="mt-1 w-full rounded-xl border px-3 py-2 text-sm" placeholder="you@example.com" required>
+          </label>
+
+          <label class="text-sm font-semibold">Password
+            <div class="relative mt-1">
+              <input id="pass" type="password" class="w-full rounded-xl border px-3 py-2 pr-10 text-sm" placeholder="••••••••" required>
+              <button type="button" class="absolute inset-y-0 right-0 px-3 text-xs text-gray-600" onclick="togglePass('pass', this)">Show</button>
+            </div>
+          </label>
+
+          <button class="mt-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2">Sign In</button>
+          <p class="text-xs text-gray-600 text-center mt-1">No account? <a href="signup.html" class="text-brand-700 font-semibold">Create one</a></p>
+        </form>
+      </section>
+
+      <p class="text-xs text-gray-500 text-center mt-4">© <span id="year"></span> ANAA ENTERPRISES</p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    function togglePass(id, btn){
+      const el = document.getElementById(id);
+      el.type = el.type === 'password' ? 'text' : 'password';
+      btn.textContent = el.type === 'password' ? 'Show' : 'Hide';
+    }
+    // placeholder handler; swap with Firebase later
+    function fakeSignIn(){ alert('Signed in (demo). Hook to Firebase Auth when ready.'); location.href = 'index.html'; }
+  </script>
+</body>
+</html>

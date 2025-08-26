@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Categories — ANAA ENTERPRISES</title>
+  <meta name="description" content="Shop by category at ANAA ENTERPRISES: Furniture, Electronics & Home appliances, Household items, Plastic items."/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        extend: {
+          colors: {
+            brand: { 500:'#1897f2',600:'#0f78c6',700:'#0d63a5' }
+          },
+          boxShadow: { soft:'0 10px 25px rgba(0,0,0,0.08)' }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-200">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
+        <div class="leading-tight">
+          <div class="text-lg font-extrabold tracking-tight">ANAA ENTERPRISES</div>
+          <div class="text-xs text-gray-500">Thoubal</div>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+        <a href="categories.html" class="text-brand-700">Categories</a>
+        <a href="products.html" class="hover:text-brand-700">Products</a>
+        <a href="index.html#why" class="hover:text-brand-700">Why us</a>
+        <a href="index.html#contact" class="hover:text-brand-700">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Categories -->
+  <main class="py-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-extrabold">Shop by Category</h1>
+      <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <a href="products.html#Furniture" class="group rounded-2xl border bg-white p-6 hover:shadow-soft transition text-center">
+          <svg class="h-12 w-12 mx-auto text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7"/></svg>
+          <div class="mt-3 font-semibold">Furniture</div>
+        </a>
+        <a href="products.html#Electronics" class="group rounded-2xl border bg-white p-6 hover:shadow-soft transition text-center">
+          <svg class="h-12 w-12 mx-auto text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 19h8m-6 0V5a2 2 0 012-2h0a2 2 0 012 2v14"/></svg>
+          <div class="mt-3 font-semibold">Electronics & Home appliances</div>
+        </a>
+        <a href="products.html#Household" class="group rounded-2xl border bg-white p-6 hover:shadow-soft transition text-center">
+          <svg class="h-12 w-12 mx-auto text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12h16M12 4v16"/></svg>
+          <div class="mt-3 font-semibold">Household item</div>
+        </a>
+        <a href="products.html#Plastic" class="group rounded-2xl border bg-white p-6 hover:shadow-soft transition text-center">
+          <svg class="h-12 w-12 mx-auto text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8h18M7 8v10a2 2 0 002 2h6a2 2 0 002-2V8"/></svg>
+          <div class="mt-3 font-semibold">Plastic item</div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t bg-white mt-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-600 flex flex-col sm:flex-row justify-between items-center">
+      <div>© <span id="year"></span> ANAA ENTERPRISES</div>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-brand-700">Return policy</a>
+        <a href="#" class="hover:text-brand-700">Shipping</a>
+        <a href="#" class="hover:text-brand-700">Privacy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
