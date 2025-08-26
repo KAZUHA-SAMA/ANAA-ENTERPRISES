@@ -68,12 +68,14 @@
         <input id="q" placeholder="Search products..." class="w-64 rounded-xl border px-3 py-2 text-sm" />
         <button class="rounded-xl border px-3 py-2 text-sm">Search</button>
       </form>
+<nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
+  <a href="index.html" class="hover:text-brand-700">Home</a>
+  <a href="products.html" class="hover:text-brand-700">Products</a>
+  <a href="cart.html" class="hover:text-brand-700">Cart (<span id="cartCount">0</span>)</a>
+  <a href="signin.html" class="hover:text-brand-700">Sign In</a>
+  <a href="signup.html" class="hover:text-brand-700">Sign Up</a>
+</nav>
 
-      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
-        <a href="index.html" class="hover:text-brand-700">Home</a>
-        <a href="products.html" class="hover:text-brand-700">Products</a>
-        <a href="cart.html" class="hover:text-brand-700">Cart (<span id="cartCount">0</span>)</a>
-      </nav>
 
       <button id="navToggle" class="md:hidden p-2 rounded-lg border text-sm">Menu</button>
     </div>
