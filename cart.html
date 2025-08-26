@@ -4,162 +4,331 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cart — ANAA ENTERPRISES</title>
-  <meta name="description" content="Your shopping cart at ANAA ENTERPRISES."/>
+  <meta name="description" content="Your shopping cart at ANAA ENTERPRISES" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
-        extend: {
-          colors: { brand: { 500:'#1897f2',600:'#0f78c6',700:'#0d63a5' } },
-          boxShadow: { soft:'0 10px 25px rgba(0,0,0,0.08)' }
-        }
+        extend: { colors: { brand: { 600:'#0f78c6', 700:'#0d63a5' } }, boxShadow: { soft:'0 20px 40px rgba(0,0,0,0.10)' } }
       }
     }
   </script>
+  <style>.no-scrollbar::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="bg-gray-50 text-gray-900">
+
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-200">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b">
+    <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
       <a href="index.html" class="flex items-center gap-2">
         <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
         <div class="leading-tight">
-          <div class="text-lg font-extrabold tracking-tight">ANAA ENTERPRISES</div>
-          <div class="text-xs text-gray-500">Cart</div>
+          <div class="text-lg font-extrabold">ANAA ENTERPRISES</div>
+          <div class="text-xs text-gray-500">Home needs, one place</div>
         </div>
       </a>
+
       <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
-        <a href="categories.html" class="hover:text-brand-700">Categories</a>
+        <a href="index.html" class="hover:text-brand-700">Home</a>
         <a href="products.html" class="hover:text-brand-700">Products</a>
-        <a href="account.html" class="hover:text-brand-700">Account</a>
-        <span class="text-brand-700">Cart (<span id="cartCount">0</span>)</span>
+        <a href="cart.html" class="text-brand-700">Cart (<span id="cartCount">0</span>)</a>
       </nav>
+
+      <button id="navToggle" class="md:hidden p-2 rounded-lg border text-sm">Menu</button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div id="mobileNav" class="md:hidden hidden border-t bg-white">
+      <div class="mx-auto max-w-7xl px-4 py-3 text-sm">
+        <a href="index.html" class="block py-2">Home</a>
+        <a href="products.html" class="block py-2">Products</a>
+        <a href="cart.html" class="block py-2">Cart (<span data-cart-count>0</span>)</a>
+      </div>
     </div>
   </header>
 
   <!-- Main -->
-  <main class="py-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-3 gap-6">
-      <section class="lg:col-span-2">
-        <h1 class="text-3xl font-extrabold">Your Cart</h1>
-        <div id="cartList" class="mt-6 space-y-3"></div>
-        <a href="products.html" class="mt-6 inline-block rounded-xl border px-4 py-2 text-sm font-semibold hover:bg-gray-50">Continue shopping</a>
-      </section>
+  <main class="mx-auto max-w-7xl px-4 py-6 grid lg:grid-cols-[1fr_360px] gap-6">
+    <!-- Cart list -->
+    <section class="rounded-2xl border bg-white p-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-extrabold">Your Cart</h1>
+        <button id="clearBtn" class="text-sm text-red-600 hover:underline">Clear all</button>
+      </div>
+      <div id="empty" class="hidden py-10 text-center text-gray-600">
+        Your cart is empty. <a href="products.html" class="text-brand-700 font-semibold">Shop products</a>
+      </div>
+      <div id="cartList" class="mt-4 grid gap-3"></div>
+    </section>
 
-      <aside class="lg:col-span-1">
-        <div class="rounded-2xl border bg-white p-6">
-          <div class="text-lg font-extrabold">Summary</div>
-          <div class="mt-3 flex justify-between text-sm"><span>Subtotal</span><span id="subTotal">₹0</span></div>
-          <div class="mt-1 flex justify-between text-sm"><span>Delivery</span><span id="deliveryFee">₹0</span></div>
-          <div class="mt-2 flex justify-between font-extrabold"><span>Total</span><span id="grandTotal">₹0</span></div>
-          <div class="mt-3 text-xs text-gray-600">COD available for local pincodes. UPI/Card coming soon.</div>
-        <a href="checkout.html" class="mt-4 block w-full rounded-xl bg-brand-600 px-4 py-3 text-center text-white font-semibold hover:bg-brand-700">
-        Checkout</a>
+    <!-- Checkout panel -->
+    <aside class="rounded-2xl border bg-white p-4 h-max">
+      <div class="text-lg font-extrabold">Checkout</div>
+
+      <div class="mt-3 grid gap-2 text-sm">
+        <div class="flex justify-between"><span>Subtotal</span><span id="subTotal">₹0</span></div>
+        <div class="flex justify-between"><span>Delivery</span><span id="deliveryFee">₹0</span></div>
+        <div class="flex justify-between font-extrabold text-gray-900 border-t pt-2">
+          <span>Total</span><span id="grandTotal">₹0</span>
         </div>
-      </aside>
-    </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="text-sm font-extrabold">Delivery details</div>
+      <form id="addrForm" class="mt-2 grid gap-2 text-sm">
+        <input id="name" class="rounded-xl border px-3 py-2" placeholder="Full name" required>
+        <input id="phone" class="rounded-xl border px-3 py-2" placeholder="Phone" required>
+        <input id="address" class="rounded-xl border px-3 py-2" placeholder="Address" required>
+        <div class="grid grid-cols-2 gap-2">
+          <input id="city" class="rounded-xl border px-3 py-2" placeholder="City" value="Imphal">
+          <input id="pincode" class="rounded-xl border px-3 py-2" placeholder="Pincode" value="795008">
+        </div>
+        <textarea id="notes" class="rounded-xl border px-3 py-2" placeholder="Notes (optional)"></textarea>
+      </form>
+
+      <hr class="my-4">
+      <div class="text-sm font-extrabold">Payment</div>
+      <div class="mt-2 grid gap-2">
+        <label class="flex items-center gap-2 text-sm">
+          <input type="radio" name="pay" value="COD" checked> Cash on Delivery
+        </label>
+        <label class="flex items-center gap-2 text-sm">
+          <input type="radio" name="pay" value="UPI"> UPI (scan & pay)
+        </label>
+
+        <!-- UPI panel -->
+        <div id="upiBox" class="hidden rounded-xl border p-3">
+          <div class="text-xs text-gray-600 mb-2">Scan and pay, then place order. Add UTR in notes if needed.</div>
+          <div class="grid grid-cols-2 gap-3 items-start">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=upi%3Apay%3Fpa%3Ajoykumarkaram%40oksbi%26pn%3AANAA%2520Enterprises%26cu%3AINR"
+                 alt="UPI QR" class="rounded-lg border">
+            <div class="text-sm">
+              <div><b>UPI ID:</b> joykumarkaram@oksbi</div>
+              <div class="mt-2"><b>Name:</b> ANAA Enterprises</div>
+              <div class="mt-2"><b>Amount:</b> <span id="upiAmt">₹0</span></div>
+              <label class="block mt-3 text-xs">Optional UTR/Ref no.
+                <input id="utr" class="mt-1 w-full rounded-xl border px-3 py-2 text-sm" placeholder="Enter UTR after payment">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="placeBtn" class="mt-4 w-full rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 py-2">
+        Place Order
+      </button>
+
+      <p id="successMsg" class="hidden mt-3 text-green-700 text-sm"></p>
+      <p class="mt-3 text-xs text-gray-600">By placing an order, you agree to our delivery and return terms.</p>
+    </aside>
   </main>
 
   <!-- Footer -->
   <footer class="border-t bg-white mt-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-600 flex flex-col sm:flex-row justify-between items-center">
-      <div>© <span id="year"></span> ANAA ENTERPRISES</div>
-      <div class="flex gap-4">
-        <a href="#" class="hover:text-brand-700">Return policy</a>
-        <a href="#" class="hover:text-brand-700">Shipping</a>
-        <a href="#" class="hover:text-brand-700">Privacy</a>
+    <div class="mx-auto max-w-7xl px-4 py-8 grid gap-6 sm:grid-cols-3 text-sm text-gray-700">
+      <div>
+        <div class="font-semibold text-gray-900">ANAA ENTERPRISES</div>
+        L.I. Shopping Complex, Singjamei Bazar<br>Imphal West – 795008, Manipur
+      </div>
+      <div>
+        <div class="font-semibold text-gray-900">Contact</div>
+        WhatsApp: <a href="https://wa.me/917005023608" class="text-brand-700 hover:underline">7005023608</a><br>
+        Email: <a href="mailto:joykumarkaram@gmail.com" class="text-brand-700 hover:underline">joykumarkaram@gmail.com</a>
+      </div>
+      <div>
+        <div class="font-semibold text-gray-900">Business Hours</div>
+        Mon – Sat: 9:00 AM – 6:00 PM<br>Sunday: 10:00 AM – 3:00 PM
       </div>
     </div>
+    <div class="mx-auto max-w-7xl px-4 py-4 text-xs text-gray-500 text-center border-t">© <span id="year"></span> ANAA ENTERPRISES</div>
   </footer>
 
-<script>
-  // ===== Cart config =====
-  const CART_KEY = 'anaa_cart';
-  const DELIVERY = { local: 49, freeOver: 999 }; // tweak if you want
-  const fmt = n => '₹' + Number(n || 0).toLocaleString('en-IN');
+  <!-- Scripts -->
+  <script>
+    // Common UI
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('navToggle')?.addEventListener('click', ()=> {
+      document.getElementById('mobileNav').classList.toggle('hidden');
+    });
 
-  // ===== Safe storage helpers =====
-  function getCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
-    catch { return []; }
-  }
-  function setCart(v) {
-    localStorage.setItem(CART_KEY, JSON.stringify(v));
-    render(); // re-render after write
-  }
+    // Cart store
+    const CART_KEY='anaa_cart';
+    function readCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); } catch { return []; } }
+    function saveCart(arr){ localStorage.setItem(CART_KEY, JSON.stringify(arr)); window.dispatchEvent(new Event('cart-updated')); }
+    function cartCount(){ return readCart().reduce((s,i)=> s + Number(i.qty||0), 0); }
+    function fmt(n){ return '₹' + Number(n||0).toLocaleString('en-IN'); }
+    function renderBadge(){
+      document.getElementById('cartCount').textContent = cartCount();
+      document.querySelector('[data-cart-count]')?.textContent = cartCount();
+    }
+    window.addEventListener('storage', e=>{ if(e.key===CART_KEY) renderBadge(); });
+    window.addEventListener('cart-updated', renderBadge);
 
-  // ===== Mutations (string-safe IDs) =====
-  function changeQty(id, delta) {
-    const c = getCart();
-    const idx = c.findIndex(x => String(x.id) === String(id));
-    if (idx < 0) return;
-    const q = Math.max(0, Number(c[idx].qty || 0) + Number(delta || 0));
-    if (q === 0) c.splice(idx, 1);
-    else c[idx].qty = Math.min(q, 99);
-    setCart(c);
-  }
+    // Elements
+    const listEl = document.getElementById('cartList');
+    const emptyEl = document.getElementById('empty');
+    const subEl = document.getElementById('subTotal');
+    const delEl = document.getElementById('deliveryFee');
+    const totEl = document.getElementById('grandTotal');
+    const upiAmt = document.getElementById('upiAmt');
+    const upiBox = document.getElementById('upiBox');
+    const placeBtn = document.getElementById('placeBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const successMsg = document.getElementById('successMsg');
 
-  function removeItem(id) {
-    const c = getCart().filter(x => String(x.id) !== String(id));
-    setCart(c);
-  }
+    // Payment toggle
+    document.querySelectorAll('input[name="pay"]').forEach(r=>{
+      r.addEventListener('change', ()=> {
+        const mode = getPaymentMode();
+        upiBox.classList.toggle('hidden', mode!=='UPI');
+      });
+    });
 
-  // ===== Totals =====
-  function totals() {
-    const c = getCart();
-    const sub = c.reduce((s, i) => s + Number(i.price || 0) * Number(i.qty || 0), 0);
-    const del = sub === 0 ? 0 : (sub >= DELIVERY.freeOver ? 0 : DELIVERY.local);
-    return { sub, del, total: sub + del, count: c.reduce((s, i) => s + Number(i.qty || 0), 0) };
-  }
+    function getPaymentMode(){
+      const r = document.querySelector('input[name="pay"]:checked');
+      return r ? r.value : 'COD';
+    }
 
-  // ===== Render =====
-  const yearEl = document.getElementById('year');
-  const listEl = document.getElementById('cartList');
-  const subEl = document.getElementById('subTotal');
-  const delEl = document.getElementById('deliveryFee');
-  const totEl = document.getElementById('grandTotal');
-  const countEls = Array.from(document.querySelectorAll('#cartCount, [data-cart-count]'));
-
-  function render() {
-    const c = getCart();
-    const { sub, del, total, count } = totals();
-
-    // badge(s)
-    countEls.forEach(el => el && (el.textContent = count));
-
-    // items
-    if (!c.length) {
-      listEl.innerHTML = '<div class="rounded-2xl border bg-white p-6 text-sm text-gray-600">Your cart is empty.</div>';
-    } else {
-      listEl.innerHTML = c.map(ci => `
-        <div class="rounded-2xl border bg-white p-3 flex gap-3 items-center">
-          <img src="${ci.image || 'https://via.placeholder.com/160x120?text=Item'}" class="h-16 w-20 rounded-xl object-cover" alt="">
-          <div class="flex-1 min-w-0">
-            <div class="font-semibold text-sm truncate">${ci.title || 'Untitled item'}</div>
-            <div class="text-xs text-gray-500">SKU: ${ci.sku || '-'} • ${fmt(ci.price)}</div>
-            <div class="mt-2 flex items-center gap-2">
-              <button class="px-2 rounded border" onclick="changeQty('${ci.id}', -1)">−</button>
-              <span class="text-sm">${ci.qty}</span>
-              <button class="px-2 rounded border" onclick="changeQty('${ci.id}', 1)">+</button>
-              <button class="ml-auto text-xs text-red-600" onclick="removeItem('${ci.id}')">Remove</button>
+    // Render cart
+    function renderCart(){
+      const cart = readCart();
+      renderBadge();
+      if(!cart.length){
+        emptyEl.classList.remove('hidden');
+        listEl.innerHTML = '';
+        totals();
+        return;
+      }
+      emptyEl.classList.add('hidden');
+      listEl.innerHTML = cart.map((p,i)=>`
+        <div class="rounded-2xl border p-3 grid grid-cols-[92px_1fr_auto] gap-3 items-center">
+          <img src="${p.image||''}" class="h-20 w-24 object-cover rounded-xl border">
+          <div>
+            <div class="font-semibold">${escapeHTML(p.title||'')}</div>
+            <div class="text-sm text-gray-600">Price: ${fmt(p.price||0)}</div>
+            <div class="mt-1 inline-flex items-center gap-2">
+              <button class="px-2 py-1 rounded border" onclick="decQty(${i})">-</button>
+              <input class="w-12 text-center rounded border py-1" value="${Number(p.qty||1)}" onchange="setQty(${i}, this.value)">
+              <button class="px-2 py-1 rounded border" onclick="incQty(${i})">+</button>
             </div>
+          </div>
+          <div class="text-right">
+            <div class="font-extrabold">${fmt((p.price||0)*(p.qty||1))}</div>
+            <button class="mt-2 text-sm text-red-600 hover:underline" onclick="removeItem(${i})">Remove</button>
           </div>
         </div>
       `).join('');
+      totals();
     }
 
-    // totals
-    subEl.textContent = fmt(sub);
-    delEl.textContent = fmt(del);
-    totEl.textContent = fmt(total);
-  }
+    function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]); }
 
-  // ===== Init =====
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-  render();
-</script>
+    function totals(){
+      const cart = readCart();
+      const subtotal = cart.reduce((s,p)=> s + (Number(p.price||0)*Number(p.qty||0)), 0);
+      const delivery = subtotal >= 999 || subtotal===0 ? 0 : 49;
+      const grand = subtotal + delivery;
+      subEl.textContent = fmt(subtotal);
+      delEl.textContent = fmt(delivery);
+      totEl.textContent = fmt(grand);
+      upiAmt.textContent = fmt(grand);
+      return { subtotal, delivery, grand };
+    }
 
+    // Qty ops
+    function incQty(i){ const c=readCart(); c[i].qty=Math.min(Number(c[i].qty||1)+1,99); saveCart(c); renderCart(); }
+    function decQty(i){ const c=readCart(); c[i].qty=Math.max(Number(c[i].qty||1)-1,1); saveCart(c); renderCart(); }
+    function setQty(i,val){ const q=Math.max(1, Math.min(99, parseInt(val||'1',10))); const c=readCart(); c[i].qty=q; saveCart(c); renderCart(); }
+    function removeItem(i){ const c=readCart(); c.splice(i,1); saveCart(c); renderCart(); }
+
+    clearBtn.addEventListener('click', ()=>{
+      if(confirm('Clear all items from cart?')){ saveCart([]); renderCart(); }
+    });
+
+    // Place order
+    placeBtn.addEventListener('click', placeOrder);
+    function placeOrder(){
+      const cart = readCart();
+      if(!cart.length){ alert('Your cart is empty.'); return; }
+
+      // basic form validation
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const city = document.getElementById('city').value.trim();
+      const pincode = document.getElementById('pincode').value.trim();
+      const notes = document.getElementById('notes').value.trim();
+      if(!name || !phone || !address){ alert('Please fill name, phone, and address.'); return; }
+
+      const { subtotal, delivery, grand } = totals();
+      const paymentMode = getPaymentMode();
+      const orderId = 'ANAA-' + Date.now().toString().slice(-8);
+      const order = {
+        orderId,
+        amount: grand,
+        deliveryFee: delivery,
+        items: cart,
+        paymentMode,
+        paymentStatus: paymentMode==='COD' ? 'pending' : 'pending',
+        createdAt: new Date(),
+        customer: { name, phone, address, city, pincode, notes },
+      };
+      const utr = document.getElementById('utr').value.trim();
+      if(paymentMode==='UPI' && utr) order.utr = utr;
+      order.upiId = 'joykumarkaram@oksbi';
+
+      // Try Firestore first
+      (async ()=>{
+        let saved = false, savedId = null;
+        if(window.db){
+          try{
+            const { addDoc, collection, serverTimestamp } =
+              await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+            const payload = { ...order, createdAt: serverTimestamp() };
+            const ref = await addDoc(collection(window.db,'orders'), payload);
+            saved = true; savedId = ref.id;
+          }catch(e){ console.warn('Firestore add order failed', e); }
+        }
+        if(!saved){
+          // Fallback to localStorage list so admin.html can still see something
+          try{
+            const arr = JSON.parse(localStorage.getItem('anaa_orders')||'[]');
+            arr.unshift({ id: orderId, ...order });
+            localStorage.setItem('anaa_orders', JSON.stringify(arr));
+            saved = true; savedId = orderId;
+          }catch(e){}
+        }
+
+        if(saved){
+          // Clear cart
+          saveCart([]);
+          renderCart();
+          successMsg.textContent = `Order placed! Your Order ID is ${orderId}. We’ll contact you soon.`;
+          successMsg.classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }else{
+          alert('Could not place order. Please try again.');
+        }
+      })();
+    }
+
+    // Init
+    renderCart();
+    // Show UPI box if chosen at load
+    if(getPaymentMode()==='UPI') upiBox.classList.remove('hidden');
+  </script>
+
+  <!-- Optional Firebase config if you want live orders now -->
+  <!--
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    const app = initializeApp({ /* your config */ });
+    window.db = getFirestore(app);
+  </script>
+  -->
 </body>
 </html>
