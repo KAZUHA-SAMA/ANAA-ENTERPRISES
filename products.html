@@ -4,143 +4,344 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Products — ANAA ENTERPRISES</title>
-  <meta name="description" content="Browse products at ANAA ENTERPRISES: Furniture, Electronics & Home appliances, Household items, Plastic items."/>
+  <meta name="description" content="Browse products: Furniture, Electronics, Home Appliances, Household Products, Plastic Products, Blankets & Mattress."/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
-        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
         extend: {
-          colors: { brand: { 500:'#1897f2',600:'#0f78c6',700:'#0d63a5' } },
-          boxShadow: { soft:'0 10px 25px rgba(0,0,0,0.08)' }
+          colors: { brand: { 600:'#0f78c6', 700:'#0d63a5' } },
+          boxShadow: { soft:'0 20px 40px rgba(0,0,0,0.10)' }
         }
       }
     }
   </script>
+  <style>.no-scrollbar::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="bg-gray-50 text-gray-900">
+
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-gray-200">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b">
+    <div class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
       <a href="index.html" class="flex items-center gap-2">
         <div class="h-10 w-10 rounded-2xl bg-brand-600 text-white grid place-content-center font-extrabold">A</div>
         <div class="leading-tight">
-          <div class="text-lg font-extrabold tracking-tight">ANAA ENTERPRISES</div>
-          <div class="text-xs text-gray-500">Products</div>
+          <div class="text-lg font-extrabold">ANAA ENTERPRISES</div>
+          <div class="text-xs text-gray-500">Home needs, one place</div>
         </div>
       </a>
+
+      <form id="searchForm" class="hidden md:flex items-center gap-2">
+        <input id="q" placeholder="Search products..." class="w-72 rounded-xl border px-3 py-2 text-sm" />
+        <button class="rounded-xl border px-3 py-2 text-sm">Search</button>
+      </form>
+
       <nav class="hidden md:flex items-center gap-6 text-sm font-semibold">
-        <a href="categories.html" class="hover:text-brand-700">Categories</a>
-        <a href="products.html" class="text-brand-700">Products</a>
-        <a href="index.html#why" class="hover:text-brand-700">Why us</a>
-        <a href="index.html#contact" class="hover:text-brand-700">Contact</a>
+        <a href="index.html" class="hover:text-brand-700">Home</a>
+        <a href="products.html" class="hover:text-brand-700 text-brand-700">Products</a>
+        <a href="cart.html" class="hover:text-brand-700">Cart (<span id="cartCount">0</span>)</a>
       </nav>
+
+      <button id="navToggle" class="md:hidden p-2 rounded-lg border text-sm">Menu</button>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div id="mobileNav" class="md:hidden hidden border-t bg-white">
+      <div class="mx-auto max-w-7xl px-4 py-3 text-sm">
+        <form id="mSearch" class="flex gap-2 mb-2">
+          <input id="mq" placeholder="Search products..." class="flex-1 rounded-xl border px-3 py-2 text-sm" />
+          <button class="rounded-xl border px-3 py-2 text-sm">Go</button>
+        </form>
+        <a href="index.html" class="block py-2">Home</a>
+        <a href="products.html" class="block py-2">Products</a>
+        <a href="cart.html" class="block py-2">Cart (<span data-cart-count>0</span>)</a>
+      </div>
     </div>
   </header>
 
-  <!-- Product grid -->
-  <main class="py-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 class="text-3xl font-extrabold">Products</h1>
-        <div class="flex gap-2">
-          <select id="categoryFilter" class="rounded-xl border border-gray-300 px-3 py-2 text-sm">
-            <option value="all">All Categories</option>
-            <option value="Furniture">Furniture</option>
-            <option value="Electronics">Electronics & Home appliances</option>
-            <option value="Household">Household item</option>
-            <option value="Plastic">Plastic item</option>
-          </select>
-          <select id="sortFilter" class="rounded-xl border border-gray-300 px-3 py-2 text-sm">
-            <option value="default">Sort: Default</option>
-            <option value="priceLow">Price: Low to High</option>
-            <option value="priceHigh">Price: High to Low</option>
-          </select>
-        </div>
+  <!-- Page content -->
+  <main class="mx-auto max-w-7xl px-4 py-6 grid lg:grid-cols-[260px_1fr] gap-6">
+    <!-- Sidebar filters -->
+    <aside class="h-max rounded-2xl border bg-white p-4">
+      <div class="text-sm font-extrabold">Categories</div>
+      <div id="catList" class="mt-2 grid gap-1"></div>
+
+      <hr class="my-4">
+      <div class="text-sm font-extrabold">Sort</div>
+      <select id="sortSel" class="mt-2 w-full rounded-xl border px-3 py-2 text-sm">
+        <option value="az">A → Z</option>
+        <option value="za">Z → A</option>
+        <option value="pl">Price Low</option>
+        <option value="ph">Price High</option>
+        <option value="new">Newest</option>
+      </select>
+    </aside>
+
+    <!-- Products area -->
+    <section>
+      <!-- Toolbar -->
+      <div class="rounded-2xl border bg-white p-3 flex flex-wrap items-center gap-3">
+        <form id="toolbarSearch" class="flex items-center gap-2 flex-1 min-w-[220px]">
+          <input id="tq" placeholder="Search products..." class="flex-1 rounded-xl border px-3 py-2 text-sm" />
+          <button class="rounded-xl border px-3 py-2 text-sm">Search</button>
+        </form>
+        <div id="activeFilter" class="text-sm text-gray-600"></div>
       </div>
-      <div id="productGrid" class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-    </div>
+
+      <!-- Grid -->
+      <div id="grid" class="mt-4 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+
+      <!-- Pager -->
+      <div id="pager" class="mt-4 flex items-center justify-center gap-2"></div>
+    </section>
   </main>
 
   <!-- Footer -->
   <footer class="border-t bg-white mt-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-gray-600 flex flex-col sm:flex-row justify-between items-center">
-      <div>© <span id="year"></span> ANAA ENTERPRISES</div>
-      <div class="flex gap-4">
-        <a href="#" class="hover:text-brand-700">Return policy</a>
-        <a href="#" class="hover:text-brand-700">Shipping</a>
-        <a href="#" class="hover:text-brand-700">Privacy</a>
+    <div class="mx-auto max-w-7xl px-4 py-8 grid gap-6 sm:grid-cols-3 text-sm text-gray-700">
+      <div>
+        <div class="font-semibold text-gray-900">ANAA ENTERPRISES</div>
+        L.I. Shopping Complex, Singjamei Bazar<br>Imphal West – 795008, Manipur
+      </div>
+      <div>
+        <div class="font-semibold text-gray-900">Contact</div>
+        WhatsApp: <a href="https://wa.me/917005023608" class="text-brand-700 hover:underline">7005023608</a><br>
+        Email: <a href="mailto:joykumarkaram@gmail.com" class="text-brand-700 hover:underline">joykumarkaram@gmail.com</a>
+      </div>
+      <div>
+        <div class="font-semibold text-gray-900">Business Hours</div>
+        Mon – Sat: 9:00 AM – 6:00 PM<br>Sunday: 10:00 AM – 3:00 PM
       </div>
     </div>
+    <div class="mx-auto max-w-7xl px-4 py-4 text-xs text-gray-500 text-center border-t">© <span id="year"></span> ANAA ENTERPRISES</div>
   </footer>
 
- <script>
-  // ---- Product data (now with id + sku) ----
-  const products = [
-    {id:101, title:'Plastic Bucket 18L (Blue)', price:179, category:'Plastic',    sku:'BUC-18L-BLU', image:'https://images.unsplash.com/photo-1603294237578-774ecf2d7d89?q=80&w=800&auto=format&fit=crop'},
-    {id:102, title:'Electric Rice Cooker 1.8L',  price:1599, category:'Electronics', sku:'RC-1_8L',   image:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop'},
-    {id:103, title:'Table Fan 400mm',            price:1699, category:'Electronics', sku:'FAN-400',   image:'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop'},
-    {id:104, title:'Cloth Storage Box 60L',      price:399,  category:'Household',   sku:'STB-60L',   image:'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800&auto=format&fit=crop'},
-    {id:105, title:'Plastic Chair (Armless)',    price:599,  category:'Furniture',   sku:'CHAIR-PL1', image:'https://images.unsplash.com/photo-1582582621959-48b89570f8a1?q=80&w=800&auto=format&fit=crop'},
-    {id:106, title:'Pressure Cooker 5L',         price:2199, category:'Electronics', sku:'PC-5L',     image:'https://images.unsplash.com/photo-1621939514649-280153f2c27c?q=80&w=800&auto=format&fit=crop'},
-  ];
+  <!-- Scripts -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('navToggle')?.addEventListener('click', ()=> {
+      document.getElementById('mobileNav').classList.toggle('hidden');
+    });
 
-  // ---- Cart helpers (localStorage) ----
-  const CART_KEY = 'anaa_cart';
-  const getCart = () => JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-  const setCart = v => localStorage.setItem(CART_KEY, JSON.stringify(v));
-  const fmt = n => '₹' + Number(n||0).toLocaleString('en-IN');
+    // cart badge
+    const CART_KEY='anaa_cart';
+    function getCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); } catch { return []; } }
+    function cartCount(){ return getCart().reduce((s,i)=> s+Number(i.qty||0),0); }
+    function renderCartBadge(){
+      document.getElementById('cartCount').textContent = cartCount();
+      document.querySelector('[data-cart-count]')?.textContent = cartCount();
+    }
+    window.addEventListener('storage', e=>{ if(e.key===CART_KEY) renderCartBadge(); });
+    window.addEventListener('cart-updated', renderCartBadge);
+    renderCartBadge();
 
-  function addToCart(id, title, price, sku, image){
-    const cart = getCart();
-    const i = cart.findIndex(x => x.id === id);
-    if(i >= 0) cart[i].qty = Math.min(cart[i].qty + 1, 99);
-    else cart.push({ id, title, price, sku, image, qty: 1 });
-    setCart(cart);
-    alert(title + ' added to cart!');
-  }
+    // search forwarders
+    document.getElementById('searchForm')?.addEventListener('submit', e=>{
+      e.preventDefault(); const q=document.getElementById('q').value.trim(); updateQuery({q, page:1});
+    });
+    document.getElementById('mSearch')?.addEventListener('submit', e=>{
+      e.preventDefault(); const q=document.getElementById('mq').value.trim(); updateQuery({q, page:1});
+    });
+    document.getElementById('toolbarSearch')?.addEventListener('submit', e=>{
+      e.preventDefault(); const q=document.getElementById('tq').value.trim(); updateQuery({q, page:1});
+    });
 
-  // Escape single quotes for inline onclick
-  const esc = s => String(s).replace(/'/g, "\\'");
+    // helpers
+    const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+    const fmt=n=>'₹'+Number(n||0).toLocaleString('en-IN');
 
-  // ---- Render grid ----
-  const grid = document.getElementById('productGrid');
-  function renderProducts(list){
-    grid.innerHTML = list.map(p => `
-      <div class="rounded-2xl border bg-white hover:shadow-soft transition overflow-hidden">
-        <img src="${p.image}" class="aspect-[4/3] w-full object-cover" alt="${esc(p.title)}"/>
-        <div class="p-4">
-          <div class="text-sm text-gray-500">${p.category}</div>
-          <div class="mt-1 font-semibold">${p.title}</div>
-          <div class="mt-2 text-lg font-bold">${fmt(p.price)}</div>
-          <button 
-            onclick="addToCart(${p.id}, '${esc(p.title)}', ${p.price}, '${esc(p.sku)}', '${esc(p.image)}')"
-            class="mt-3 w-full rounded-xl bg-brand-600 px-3 py-2 text-white text-sm font-semibold hover:bg-brand-700">
-            Add to Cart
-          </button>
+    // categories (editable via Firestore categories, fallback to your six)
+    async function loadCategories(){
+      if(window.db){
+        try{
+          const { collection, getDocs, query, where, orderBy } =
+            await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+          const q = query(collection(window.db,'categories'), where('active','==',true), orderBy('sort'));
+          const snap = await getDocs(q);
+          const arr = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+          if(arr.length) return arr;
+        }catch(e){ console.warn('categories fetch failed', e); }
+      }
+      return [
+        {label:'Furniture', slug:'furniture'},
+        {label:'Electronics', slug:'electronics'},
+        {label:'Home Appliances', slug:'home-appliances'},
+        {label:'Household Products', slug:'household'},
+        {label:'Plastic Products', slug:'plastic'},
+        {label:'Blankets & Mattress', slug:'blankets'}
+      ];
+    }
+
+    // products (editable via Firestore products, fallback demo)
+    async function loadProducts(){
+      if(window.db){
+        try{
+          const { collection, getDocs, query, where, orderBy, limit, startAfter } =
+            await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+          // we’ll load all active for now (client-side paginate)
+          const q = query(collection(window.db,'products'), where('active','==',true), orderBy('title'));
+          const snap = await getDocs(q);
+          return snap.docs.map(d=>({ id:d.id, ...d.data() }));
+        }catch(e){ console.warn('products fetch failed', e); }
+      }
+      return [
+        {id:'1', title:'Electric Rice Cooker 1.8L', price:1599, image:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop', category:'Home Appliances'},
+        {id:'2', title:'Table Fan 400mm', price:1699, image:'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop', category:'Electronics'},
+        {id:'3', title:'Cloth Storage Box 60L', price:399, image:'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800&auto=format&fit=crop', category:'Plastic Products'},
+        {id:'4', title:'Pressure Cooker 5L', price:2199, image:'https://images.unsplash.com/photo-1621939514649-280153f2c27c?q=80&w=800&auto=format&fit=crop', category:'Home Appliances'},
+        {id:'5', title:'Plastic Bucket 18L', price:179, image:'https://images.unsplash.com/photo-1603294237578-774ecf2d7d89?q=80&w=800&auto=format&fit=crop', category:'Plastic Products'},
+        {id:'6', title:'Plastic Chair (Armless)', price:599, image:'https://images.unsplash.com/photo-1582582621959-48b89570f8a1?q=80&w=800&auto=format&fit=crop', category:'Furniture'},
+        {id:'7', title:'Water Boiler 1.5L', price:999, image:'https://images.unsplash.com/photo-1551218808-94e220e084d2?q=80&w=800&auto=format&fit=crop', category:'Home Appliances'},
+        {id:'8', title:'Blanket (Double)', price:1299, image:'https://images.unsplash.com/photo-1549187774-b4e9b0445b41?q=80&w=800&auto=format&fit=crop', category:'Blankets & Mattress'}
+      ];
+    }
+
+    // state
+    let ALL=[], FILTERED=[];
+    let PAGE=1, SIZE=12;
+
+    const grid=document.getElementById('grid');
+    const pager=document.getElementById('pager');
+    const activeFilter=document.getElementById('activeFilter');
+    const sortSel=document.getElementById('sortSel');
+
+    function renderCats(cats){
+      const params=new URLSearchParams(location.search);
+      const current=params.get('cat')||'all';
+      const lis = [{label:'All',slug:'all'}, ...cats].map(c=>{
+        const on = (c.slug||c.label||'all').toLowerCase()===current.toLowerCase();
+        return `<a href="products.html?${buildQuery({cat:c.slug||c.label,page:1})}"
+                  class="block rounded-lg px-3 py-1.5 text-sm ${on?'bg-gray-900 text-white':'hover:bg-gray-50 border'}">
+                  ${esc(c.label||c)}
+                </a>`;
+      }).join('');
+      document.getElementById('catList').innerHTML = lis;
+    }
+
+    function applyFilters(){
+      const params=new URLSearchParams(location.search);
+      const q=(params.get('q')||'').toLowerCase();
+      const cat=(params.get('cat')||'all').toLowerCase();
+      PAGE=parseInt(params.get('page')||'1',10);
+      const sort=params.get('sort')||sortSel.value;
+      sortSel.value = sort;
+
+      // filter
+      FILTERED = ALL.filter(p=>{
+        const t=(p.title||'').toLowerCase();
+        const c=(p.category||'').toLowerCase();
+        const matchesQ = !q || t.includes(q) || c.includes(q);
+        const matchesCat = cat==='all' ? true :
+          c.includes(cat) || (cat==='home-appliances' && c.includes('appliance')) ||
+          (cat==='household' && c.includes('household')) ||
+          (cat==='plastic' && c.includes('plastic')) ||
+          (cat==='blankets' && (c.includes('blanket')||c.includes('mattress'))) ||
+          (cat==='electronics' && c.includes('electronic')) ||
+          (cat==='furniture' && c.includes('furniture'));
+        return matchesQ && matchesCat;
+      });
+
+      // sort
+      if(sort==='az') FILTERED.sort((a,b)=> String(a.title).localeCompare(String(b.title)));
+      if(sort==='za') FILTERED.sort((a,b)=> String(b.title).localeCompare(String(a.title)));
+      if(sort==='pl') FILTERED.sort((a,b)=> Number(a.price||0)-Number(b.price||0));
+      if(sort==='ph') FILTERED.sort((a,b)=> Number(b.price||0)-Number(a.price||0));
+      if(sort==='new') FILTERED.sort((a,b)=> (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+      // render summary
+      const niceCat = cat==='all'?'All categories':
+        ['furniture','electronics','home-appliances','household','plastic','blankets'].includes(cat) ?
+          cat.replace('-', ' ').replace(/\b\w/g,m=>m.toUpperCase()) : cat;
+      activeFilter.textContent = `${FILTERED.length} results • ${niceCat}${q?` • “${q}”`:''}`;
+
+      // paginate
+      renderPage();
+    }
+
+    function renderPage(){
+      const start=(PAGE-1)*SIZE, end=start+SIZE;
+      const pageItems = FILTERED.slice(start,end);
+      grid.innerHTML = pageItems.map(p=>`
+        <div class="rounded-2xl border bg-white overflow-hidden hover:shadow-soft transition">
+          <img src="${esc(p.image||'')}" alt="${esc(p.title)}" class="w-full aspect-[4/3] object-cover">
+          <div class="p-3">
+            <div class="text-xs text-gray-500 truncate">${esc(p.category||'')}</div>
+            <div class="font-semibold truncate" title="${esc(p.title)}">${esc(p.title)}</div>
+            <div class="mt-1 font-extrabold text-brand-700">${fmt(p.price||0)}</div>
+            <button class="mt-2 w-full rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-3 py-2"
+              onclick="addToCart('${esc(p.id)}','${esc(p.title)}',${Number(p.price||0)},'${esc(p.sku||'')}','${esc(p.image||'')}')">Add to Cart</button>
+          </div>
         </div>
-      </div>
-    `).join('');
-  }
-  renderProducts(products);
+      `).join('');
 
-  // ---- Filters/sort (unchanged) ----
-  document.getElementById('categoryFilter').addEventListener('change', e => {
-    const val = e.target.value;
-    const filtered = val === 'all' ? products : products.filter(p => p.category === val);
-    renderProducts(filtered);
-  });
+      // pager
+      const pages=Math.max(1, Math.ceil(FILTERED.length/SIZE));
+      let html='';
+      if(pages>1){
+        const btn=(n,label=String(n),dis=false,pri=false)=>`<button ${dis?'disabled':''}
+          class="px-3 py-1.5 rounded-lg border text-sm ${pri?'bg-gray-900 text-white':'hover:bg-gray-50'} disabled:opacity-40"
+          onclick="updateQuery({page:${n}})">${label}</button>`;
+        html += btn(Math.max(1,PAGE-1),'Prev',PAGE===1);
+        const startP = Math.max(1, PAGE-2), endP=Math.min(pages, PAGE+2);
+        for(let i=startP;i<=endP;i++) html += btn(i,String(i),false,i===PAGE);
+        html += btn(Math.min(pages,PAGE+1),'Next',PAGE===pages);
+      }
+      pager.innerHTML = html;
+    }
 
-  document.getElementById('sortFilter').addEventListener('change', e => {
-    let list = [...products];
-    if(e.target.value === 'priceLow')  list.sort((a,b)=>a.price-b.price);
-    if(e.target.value === 'priceHigh') list.sort((a,b)=>b.price-a.price);
-    renderProducts(list);
-  });
+    function addToCart(id,title,price,sku,image){
+      const cart = JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+      const i = cart.findIndex(x => String(x.id)===String(id));
+      if(i>=0) cart[i].qty = Math.min(Number(cart[i].qty||0)+1, 99);
+      else cart.push({ id, title, price, sku, image, qty:1 });
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      window.dispatchEvent(new Event('cart-updated'));
+      alert(title + ' added to cart');
+    }
 
-  document.getElementById('year').textContent = new Date().getFullYear();
-</script>
+    // query utils
+    function buildQuery(patch){
+      const params = new URLSearchParams(location.search);
+      Object.entries(patch).forEach(([k,v])=>{
+        if(v===undefined || v===null || v==='') params.delete(k);
+        else params.set(k, v);
+      });
+      return params.toString();
+    }
+    function updateQuery(patch){
+      const qs = buildQuery(patch);
+      history.replaceState(null,'','?'+qs);
+      applyFilters();
+    }
 
+    // respond to sort change
+    sortSel.addEventListener('change', ()=> updateQuery({ sort: sortSel.value, page:1 }));
+
+    // boot
+    (async function(){
+      // prefill search boxes from URL
+      const params=new URLSearchParams(location.search);
+      const q=params.get('q')||''; document.getElementById('q')?.value=q; document.getElementById('tq').value=q; document.getElementById('mq')?.value=q;
+
+      // categories
+      renderCats(await loadCategories());
+
+      // products
+      ALL = await loadProducts();
+      applyFilters();
+    })();
+  </script>
+
+  <!-- Optional Firebase config if you want live data right now -->
+  <!--
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    const app = initializeApp({ /* your config */ });
+    window.db = getFirestore(app);
+  </script>
+  -->
 </body>
 </html>
